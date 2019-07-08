@@ -6,8 +6,11 @@ def start(url):
 	events.info(url, info = "Checking")
 	browser = mechanicalsoup.StatefulBrowser()
 	response = browser.open(url)
-
-	events.info(str(browser.get_current_page().title.text.replace("\n", "")), info = "Title")
+	try:
+		title = str(browser.get_current_page().title.text.replace("\n", ""))
+	except UnicodeEncodeError:
+		title = str(browser.get_current_page().title.text.encode('utf-8')).replace("\n", "")
+	events.info(title, info = "Title")
 	
 	if response.status_code > 500:
 		events.error("Server error: %s" %(response.status_code))
@@ -23,7 +26,7 @@ def start(url):
 	header_info(response.headers)
 	header_analysis(response.headers)
 
-	import check_robots
+	from modules import check_robots
 	check_robots.check(url)
 
 	browser.close()
