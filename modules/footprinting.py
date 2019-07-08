@@ -1,9 +1,17 @@
-from cores import events
+from cores import events, actions
 
 def start(url):
 	import mechanicalsoup
 
 	events.info(url, info = "Checking")
+	domain = actions.get_domain(url)
+
+	# import socket, GeoIP
+	ip_addr = socket.gethostbyname(domain)
+	events.sub_info(ip_addr, info = "IP Address")
+	# ip_info = GeoIP.GeoIP()
+	# events.sub_info("%s" %(ip_info.country_name_by_name(ip_addr)), info = "Country")
+
 	browser = mechanicalsoup.StatefulBrowser()
 	response = browser.open(url)
 	try:

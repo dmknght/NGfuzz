@@ -27,7 +27,17 @@ def scan(url, module_name):
 		module.check(browser)
 	browser.close()
 
-url = "http://testphp.vulnweb.com/"
+def check_url(url):
+	if "://" in url:
+		if not url.startswith(("http://", "https://")):
+			events.error("Invalid URL protocol")
+	else:
+		url = "http://%s" %(url)
+	url = "%s/" %(url) if url[-1] != "/" else url
+
+	return url
+
+url = check_url("testphp.vulnweb.com")
 from modules import footprinting
 footprinting.start(url)
 
