@@ -31,8 +31,8 @@ url = "http://testphp.vulnweb.com/"
 from modules import footprinting
 footprinting.start(url)
 
-# modules = load_modules()
-# events.info("Loaded %s modules: %s" %(len(modules), modules))
+modules = load_modules()
+events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 
 # for module in modules:
 # 	scan(url, module)

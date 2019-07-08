@@ -58,4 +58,4 @@ class Check(object):
 		return ["'"]
 
 	def found(self, inject_type, url):
-		events.vulnerable(inject_type, url)
+		events.vuln_crit(inject_type, url)

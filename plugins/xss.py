@@ -15,4 +15,4 @@ class Check(object):
 		return ["<script>alert(1);</script>"]
 
 	def found(self, url):
-		events.vulnerable("Reflected XSS", url)
+		events.vuln_crit("Reflected XSS", url)

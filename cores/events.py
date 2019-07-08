@@ -10,5 +10,8 @@ def success(data, info = "INFO"):
 def error(data, info = "ERR"):
 	print("[x] [\033[31m%s\033[00m] %s" %(info, data))
 
-def vulnerable(vuln, url):
+def vuln_crit(vuln, url):
 	print("[*] [\033[31m%s\033[00m] [\033[4m\033[40m%s\033[00m]" %(vuln, url))
+
+def sub_vuln_low(vuln, info):
+	print(" [\033[34m%s\033[00m] [\033[31m%s\033[00m]" %(vuln, info))
