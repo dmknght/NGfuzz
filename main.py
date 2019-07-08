@@ -27,8 +27,7 @@ def scan(url, module_name):
 		module.check(browser)
 	browser.close()
 
-# url = "http://testphp.vulnweb.com/"
-url = "https://www.aron.com.vn/"
+url = "http://testphp.vulnweb.com/"
 from modules import footprinting
 footprinting.start(url)
 

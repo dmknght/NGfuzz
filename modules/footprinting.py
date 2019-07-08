@@ -43,7 +43,8 @@ def header_analysis(header):
 	header_standards = (
 		("X-Frame-Options", "SAMEORIGIN"),
 		("X-XSS-Protection", "1; mode=block"),
-		("X-Content-Type-Options", "nosniff")
+		("X-Content-Type-Options", "nosniff"),
+		("Content-Type", "text/html; charset=utf-8")
 	)
 
 	def check_section(header, name, value):
