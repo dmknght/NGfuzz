@@ -34,5 +34,5 @@ footprinting.start(url)
 modules = load_modules()
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 
-# for module in modules:
-# 	scan(url, module)
+for module in modules:
+	scan(url, module)

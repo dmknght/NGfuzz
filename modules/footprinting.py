@@ -6,7 +6,7 @@ def start(url):
 	browser = mechanicalsoup.StatefulBrowser()
 	response = browser.open(url)
 
-	events.info(str(browser.get_current_page().title.text.replace("\n", "")), "Home")
+	events.info(str(browser.get_current_page().title.text.replace("\n", "")), "Title")
 	
 	if response.status_code > 500:
 		events.error("Server error: %s" %(response.status_code))
