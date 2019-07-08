@@ -3,10 +3,11 @@ from cores import events
 def start(url):
 	import mechanicalsoup
 
+	events.info(url, info = "Checking")
 	browser = mechanicalsoup.StatefulBrowser()
 	response = browser.open(url)
 
-	events.info(str(browser.get_current_page().title.text.replace("\n", "")), "Title")
+	events.info(str(browser.get_current_page().title.text.replace("\n", "")), info = "Title")
 	
 	if response.status_code > 500:
 		events.error("Server error: %s" %(response.status_code))
@@ -39,10 +40,24 @@ def header_info(header):
 		pass
 
 def header_analysis(header):
-	try:
-		header["X-XSS-Protection"]
-	except:
-		events.sub_vuln_low("Header Missing", "X-XSS-Protection")
+	header_standards = (
+		("X-Frame-Options", "SAMEORIGIN"),
+		("X-XSS-Protection", "1; mode=block"),
+		("X-Content-Type-Options", "nosniff")
+	)
+
+	def check_section(header, name, value):
+		try:
+			if header[name] == value:
+				events.sub_info(header[name], name)
+			else:
+				events.sub_vuln_low("Insecure value", "%s %s" %(name, header[name]))
+		except:
+			events.sub_vuln_low(name, "Header Missing")
+
+	for check_values in header_standards:
+		name, value = check_values
+		check_section(header, name, value)
 
 
 def banner_grab():

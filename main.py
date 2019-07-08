@@ -27,12 +27,13 @@ def scan(url, module_name):
 		module.check(browser)
 	browser.close()
 
-url = "http://testphp.vulnweb.com/"
+# url = "http://testphp.vulnweb.com/"
+url = "https://www.aron.com.vn/"
 from modules import footprinting
 footprinting.start(url)
 
 modules = load_modules()
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 
-for module in modules:
-	scan(url, module)
+# for module in modules:
+# 	scan(url, module)
