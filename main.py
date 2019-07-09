@@ -12,19 +12,21 @@ def load_modules():
 
 	return [x.replace(".py", "") for x in files]
 
-def scan(url, module_name):
+def scan_get(url, module_name):
+	params = ["id"]
 	import importlib
 	module = importlib.import_module('plugins.%s' %(module_name))
 	module = module.Check()
 
 	browser = mechanicalsoup.StatefulBrowser()
 	for payload in module.gen_payload():
-		module.payload = payload
-		browser.open(url)# + payload)
-		browser.select_form(nr = 0)
-		browser['searchFor'] = payload
-		browser.submit_selected()
-		module.check(browser)
+		for param in params: # TODO edit here for multiple params
+			module.payload = payload
+			payloads = {param: payload}
+			browser.open(url, params = payloads)# + payload)
+
+			if module.check(browser):
+				break
 	browser.close()
 
 def check_url(url):
@@ -40,13 +42,18 @@ def check_url(url):
 url = check_url("http://192.168.57.3/")
 from modules import footprinting
 footprinting.start(url)
-from cores.spider import spider
+from cores import spider
+print("\n")
 events.success(url, info = "Spider")
-branches = spider(url)
+branches = spider.spider(url)
+# if "no--crawl":
+# 	branches = [spider.get_params(url)]
 events.sub_info("Found %s URL[s]" %(len(branches)), "Spider")
 
 modules = load_modules()
+print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 
-# for module in modules:
-# 	scan(url, module)
+for branch in branches:
+	for module in modules:
+		scan_get(branch, module)

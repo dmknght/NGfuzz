@@ -18,6 +18,8 @@ def start(url):
 		title = str(browser.get_current_page().title.text.replace("\n", ""))
 	except UnicodeEncodeError:
 		title = str(browser.get_current_page().title.text.encode('utf-8')).replace("\n", "")
+	except:
+		title = "No Title"
 	events.info(title, info = "Title")
 	
 	if response.status_code > 500:
@@ -33,9 +35,6 @@ def start(url):
 		events.info("%s" %(browser.get_url()), info = "MOVED")
 	header_info(response.headers)
 	header_analysis(response.headers)
-
-	from modules import check_robots
-	check_robots.check(url)
 
 	browser.close()
 
