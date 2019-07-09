@@ -35,11 +35,12 @@ def check_url(url):
 			events.error("Invalid URL protocol")
 	else:
 		url = "http://%s" %(url)
-	url = "%s/" %(url) if url[-1] != "/" else url
+	if len(url.split("/")) <= 3:
+		url = "%s/" %(url) if url[-1] != "/" else url
 
 	return url
 
-url = check_url("http://192.168.57.3/")
+url = check_url("http://192.168.57.3/show.php?id=1")
 from modules import footprinting
 footprinting.start(url)
 from cores import spider
