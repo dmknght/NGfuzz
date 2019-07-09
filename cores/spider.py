@@ -28,6 +28,8 @@ def spider(url):
 		browser = mechanicalsoup.StatefulBrowser()
 		browser.open(url)
 
+		all_urls.append(url)
+
 		for link in browser.links():
 			_link = link.attrs['href']
 			if "://" not in _link:
