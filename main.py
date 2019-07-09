@@ -40,7 +40,7 @@ def check_url(url):
 
 	return url
 
-url = check_url("http://192.168.57.3/show.php?id=1")
+url = check_url("http://testaspnet.vulnweb.com/")
 from modules import footprinting
 footprinting.start(url)
 from cores import spider
