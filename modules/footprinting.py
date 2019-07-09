@@ -6,7 +6,7 @@ def start(url):
 	events.info(url, info = "Checking")
 	domain = actions.get_domain(url)
 
-	# import socket, GeoIP
+	import socket#, GeoIP
 	ip_addr = socket.gethostbyname(domain)
 	events.sub_info(ip_addr, info = "IP Address")
 	# ip_info = GeoIP.GeoIP()

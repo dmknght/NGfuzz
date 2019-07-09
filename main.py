@@ -37,9 +37,13 @@ def check_url(url):
 
 	return url
 
-url = check_url("testphp.vulnweb.com")
+url = check_url("http://192.168.57.3/")
 from modules import footprinting
 footprinting.start(url)
+from cores.spider import spider
+events.success(url, info = "Spider")
+branches = spider(url)
+events.sub_info("Found %s URL[s]" %(len(branches)), "Spider")
 
 modules = load_modules()
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
