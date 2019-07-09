@@ -1,5 +1,6 @@
 import mechanicalsoup, re
 from cores import events
+import time
 
 def load_modules():
 	import os
@@ -40,6 +41,7 @@ def check_url(url):
 
 	return url
 
+runtime = time.time()
 url = check_url("http://testaspnet.vulnweb.com/")
 from modules import footprinting
 footprinting.start(url)
@@ -55,6 +57,8 @@ modules = load_modules()
 print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 
-for branch in branches:
-	for module in modules:
-		scan_get(branch, module)
+# for branch in branches:
+# 	for module in modules:
+# 		scan_get(branch, module)
+runtime = time.time() - runtime
+events.success(time.strftime("%Y-%m-%d %H:%M"), "Elapsed: %0.2f" %(runtime))
