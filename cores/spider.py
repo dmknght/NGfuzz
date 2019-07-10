@@ -1,17 +1,21 @@
 from cores.actions import check_url, get_domain
 
-# def get_params(url):
-# 	# TODO improve
-# 	param = ""
-# 	try:
-# 		url, payloads = url.split("?")
-# 		for _ in payloads.split("&"):
-# 			param, __ = _.split("=")
+def get_params(url):
+	# TODO test with multiple arguments
+	param, value = "", ""
+	try:
+		url, payloads = url.split("?")
+		param, value = [_.split("=") for _ in payloads.split("&")][0]
 
-# 	except:
-# 		pass
-# 	finally:
-# 		return [url, [param]]
+	except ValueError:
+		pass
+	except Exception as error:
+		from cores import events
+		events.error(error)
+	finally:
+		return {url: {param: value}}
+
+# recursion
 # def spider(url):
 # 	from modules import check_robots
 # 	# global all_urls
@@ -41,34 +45,41 @@ from cores.actions import check_url, get_domain
 # 	return crawl(url, all_urls)
 
 
-all_urls = []
+all_urls = {}
 
 def spider(url):
 	from modules import check_robots
 	global all_urls
 
-	all_urls = check_robots.check(url)
+	# all_urls = check_robots.check(url)
 
 	scope = get_domain(url)
 
 	import mechanicalsoup
 	try:
+		import traceback
 		browser = mechanicalsoup.StatefulBrowser()
 		browser.open(url)
 
-		all_urls.append(url)
 
 		for link in browser.links():
-			_link = link.attrs['href']
-			if "://" not in _link:
-				if _link[0] == "/":
-					_link = check_url(scope)[:-1] + _link
+			link = get_params(link.attrs['href'])
+			link, params = link.keys()[0], link.values()[0]
+			if "://" not in link:
+				if link[0] == "/": # /index.php for example, remove / and combine with urls
+					link = check_url(scope)[:-1] + link
 				else:
-					_link = check_url(scope) + _link
-			if _link not in all_urls:
-				all_urls.append(_link)
+					link = check_url(scope) +link
+			if scope in link and "javascript:__" not in link:
+				if link not in all_urls.keys(): # TODO subdomain
+					# all_urls.append({link: params})
+					all_urls.update({link: params})
+				else: # Check and add params here
+					if params.keys()[0] not in all_urls[link].keys()[0]:
+						all_urls[link].update(params) # TODO test with multiple params
 
 	except Exception as error:
+		traceback.print_exc()
 		from cores import events
 		events.error(error)
 	finally:
