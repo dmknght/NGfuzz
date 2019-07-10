@@ -30,10 +30,10 @@ def scan_get(path, module_name):
 		# print params
 		if params:
 			for payload in module.gen_payload():
+				params = {k: payload for k in params.keys()}
 				# module.payload = payload
 				# payloads = {param: payload}
 				# browser.open(url, params = payloads)# + payload)
-				print params
 				browser.open(url, params = params)
 				if module.check(browser):
 					break
