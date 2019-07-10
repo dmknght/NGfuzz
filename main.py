@@ -13,21 +13,30 @@ def load_modules():
 
 	return [x.replace(".py", "") for x in files]
 
-def scan_get(url, module_name):
-	params = ["id"]
+def scan_get(path, module_name):
+	
+	
 	import importlib
 	module = importlib.import_module('plugins.%s' %(module_name))
 	module = module.Check()
 
 	browser = mechanicalsoup.StatefulBrowser()
-	for payload in module.gen_payload():
-		for param in params: # TODO edit here for multiple params
-			module.payload = payload
-			payloads = {param: payload}
-			browser.open(url, params = payloads)# + payload)
 
-			if module.check(browser):
-				break
+	for url in path.keys():
+		params = path[url]
+		# Remove empty keys and values
+		# https://stackoverflow.com/a/21482035
+		params = {k: v for k, v in params.items() if v}
+		# print params
+		if params:
+			for payload in module.gen_payload():
+				# module.payload = payload
+				# payloads = {param: payload}
+				# browser.open(url, params = payloads)# + payload)
+				print params
+				browser.open(url, params = params)
+				if module.check(browser):
+					break
 	browser.close()
 
 def check_url(url):
@@ -42,7 +51,7 @@ def check_url(url):
 	return url
 
 runtime = time.time()
-url = check_url("http://testaspnet.vulnweb.com/")
+url = check_url("http://aseafood.vn/")
 from modules import footprinting
 footprinting.start(url)
 from cores import spider
@@ -57,8 +66,7 @@ modules = load_modules()
 print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 
-# for branch in branches:
-# 	for module in modules:
-# 		scan_get(branch, module)
+for module in modules:
+	scan_get(branches, module)
 runtime = time.time() - runtime
 events.success(time.strftime("%Y-%m-%d %H:%M"), "Elapsed: %0.2f" %(runtime))
