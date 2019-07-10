@@ -23,7 +23,7 @@ class Check(object):
 			],
 		}
 
-	def check(self, browser):
+	def check(self, browser, payload):
 		response = str(browser.get_current_page())
 		for injection_types in self.sig.keys():
 			for sig in self.sig[injection_types]:

@@ -35,7 +35,7 @@ def scan_get(path, module_name):
 				# payloads = {param: payload}
 				# browser.open(url, params = payloads)# + payload)
 				browser.open(url, params = params)
-				if module.check(browser):
+				if module.check(browser, payload):
 					break
 	browser.close()
 
@@ -51,7 +51,7 @@ def check_url(url):
 	return url
 
 runtime = time.time()
-url = check_url("http://aseafood.vn/")
+url = check_url("http://testphp.vulnweb.com/")
 from modules import footprinting
 footprinting.start(url)
 from cores import spider

@@ -5,9 +5,9 @@ class Check(object):
 	def __init__(self):
 		self.payload = self.gen_payload()
 
-	def check(self, browser):
+	def check(self, browser, payload):
 		response = str(browser.get_current_page())
-		match = re.findall(re.escape(self.payload), response)
+		match = re.findall(re.escape(payload), response)
 		if match:
 			self.found(browser.get_url())
 
