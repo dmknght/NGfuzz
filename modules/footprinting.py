@@ -36,6 +36,7 @@ def start(url):
 			events.info("%s" %(browser.get_url()), info = "MOVED")
 		header_info(response.headers)
 		header_analysis(response.headers)
+		http_method(response.headers)
 	except Exception as error:
 		events.error(error, "Footprinting")
 	finally:
@@ -53,6 +54,7 @@ def header_info(header):
 		pass
 
 def header_analysis(header):
+	# https://www.owasp.org/index.php/Security_Headers
 	header_standards = (
 		("X-Frame-Options", "SAMEORIGIN"),
 		("X-XSS-Protection", "1; mode=block"),
@@ -73,6 +75,15 @@ def header_analysis(header):
 		name, value = check_values
 		check_section(header, name, value)
 
+def http_method(header):
+	# (OTG-CONFIG-006)
+	try:
+		if "PUT" or "DELETE" or "TRACE" or "CONNECT" in (header["Access-Control-Allow-Methods"] or header["Allow"]):
+			events.sub_vuln_low("HTTP Methods", header["Access-Control-Allow-Methods"])
+		else:
+			events.sub_info("HTTP Methods", header["Access-Control-Allow-Methods"])
+	except:
+		pass
 
 def banner_grab():
 	pass
