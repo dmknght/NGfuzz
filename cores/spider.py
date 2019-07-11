@@ -52,6 +52,9 @@ def spider(url):
 	global all_urls
 
 	# all_urls = check_robots.check(url)
+	link = get_params(url)
+	link, params = link.keys()[0], link.values()[0]
+	all_urls.update({link: params})
 
 	scope = get_domain(url)
 
