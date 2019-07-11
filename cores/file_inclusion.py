@@ -18,11 +18,11 @@ class Check(Scanner):
 
 	def signature(self):
 		return {
-			"*nix System": [
+			"Nix LFI": [
 				"root:x:0:0",
 				"root:*:0:0",
 			],
-			"Windows System": [
+			"Windows LFI": [
 				"[boot loader]",
 			],
 			"File Includsion": [
