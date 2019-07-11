@@ -23,21 +23,27 @@ class Check(Scanner):
 
 	def signature(self):
 		return {
-			"preg_replace Injection": [
+			"Unsafe function preg_replace()": [
 				"Fatal error</b>: preg_replace", # TODO check this signature
 				"Warning: preg_replace():" # TODO add more signature
 			],
-			"Eval code execution": [
+			"Unsafe function eval()": [
 				"eval()'d code</b> on line <b>",
 				],
 			"OS Command Injection": [
 				"Cannot execute a blank command in",
 				"sh: command substitution:",
+				"PATH=",
+				"PWD=",
 			],
-			"usort Injection": [
+			"Unsafe function usort()": [
 				"Warning: usort()",
 			],
-			"assert() Injection": [
+			"Unsafe function assert()": [
 				"Warning: assert():",
 			],
+			"Code Evaluation": [
+				"Failure evaluating code:",
+				"w4p1t1_eval",
+			]
 		}
