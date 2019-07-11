@@ -17,7 +17,7 @@ branches = spider.spider(url, branch = branch)
 events.sub_info("Found %s URL[s]" %(len(branches)), info = "Root" if not branch else "Branch")
 
 from modules import ActiveScan
-
+# print(branches)
 modules = cores.load_modules(ActiveScan)
 print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Scanner")

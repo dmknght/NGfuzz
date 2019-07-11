@@ -15,7 +15,9 @@ def check_url(url):
 			events.error("Invalid URL protocol")
 	else:
 		url = "http://%s" %(url)
-	if len(url.split("/")) <= 3:
+	if len(url.split("/")) <= 3 or ("." not in url.split("/")[-1] and "?" not in url.split("/")[-1]):
+	# if "." not in url.split("/")[-1] and "?" not in url.split("/")[-1]:
+	# if len(url.split("/")) <= 3:
 		url = "%s/" %(url) if url[-1] != "/" else url
 	return url
 
@@ -31,3 +33,6 @@ def get_params(url):
 		events.error(error)
 	finally:
 		return {url: params}
+
+def get_domain(url):
+	return url.split("/")[2]

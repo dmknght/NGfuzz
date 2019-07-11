@@ -1,10 +1,11 @@
-from cores import events, actions
+from cores import events
+import cores
 
 def start(url):
 	import mechanicalsoup
 
 	events.info(url, info = "Checking")
-	domain = actions.get_domain(url)
+	domain = cores.get_domain(url)
 
 	import socket#, GeoIP
 	ip_addr = socket.gethostbyname(domain)

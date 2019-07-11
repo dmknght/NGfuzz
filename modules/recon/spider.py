@@ -1,4 +1,3 @@
-from cores.actions import check_url, get_domain
 import cores
 
 all_urls = {}
@@ -13,14 +12,14 @@ def spider(url, branch = True):
 	all_urls.update({link: params})
 
 	if branch == False:
-		scope = check_url(get_domain(url))
+		scope = cores.check_url(cores.get_domain(url))
 	else:
 		if url[-1] == "/":
 			scope = url
 		else:
-			# scope = check_url("/".join(url.split("/")[2:-1]))
+			# scope = cores.check_url("/".join(url.split("/")[2:-1]))
 			# scope = scope + "/" if scope[-1] != "/" else scope
-			scope = check_url("/".join(url.split("/")[2:-1]))
+			scope = cores.check_url("/".join(url.split("/")[2:-1]))
 
 	import mechanicalsoup
 	try:
@@ -39,7 +38,8 @@ def spider(url, branch = True):
 				else:
 					link = scope + link
 			if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
-				if link not in all_urls.keys(): # TODO subdomain
+				if link not in all_urls.keys():
+					link = cores.check_url(link) # TODO bug here
 					# all_urls.append({link: params})
 					all_urls.update({link: params})
 				else: # Check and add params here
