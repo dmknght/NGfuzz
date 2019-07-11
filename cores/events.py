@@ -10,8 +10,8 @@ def success(data, info = "INFO"):
 def error(data, info = "ERR"):
 	print("[x] [\033[31m%s\033[00m] %s" %(info, data))
 
-def vuln_crit(vuln, url):
-	print("[*] [\033[31m%s\033[00m] [\033[4m\033[40m%s\033[00m]" %(vuln, url))
+def vuln_crit(vuln, url, parameter, payload):
+	print("[*] [\033[31m%s\033[00m] [\033[4m\033[40m%s\033[00m] [\033[4m\033[31m%s\033[00m: \033[4m\033[33m%s\033[00m]" %(vuln, url, parameter, payload))
 
 def sub_vuln_low(vuln, info):
 	print(" [\033[34m%s\033[00m] [\033[31m%s\033[00m]" %(vuln, info))

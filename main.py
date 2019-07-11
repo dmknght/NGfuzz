@@ -30,8 +30,14 @@ def scan_get(path, module_name):
 					# TODO no values, payload only
 					send_payload = {k: "%s%s" %(params[k], payload) if k == key else params[k] for k in params.keys()}
 					# print(send_payload)
-					browser.open(url, params = send_payload)
-					if module.check(browser, payload):
+					resp = browser.open(url, params = send_payload)
+					try:
+						resp = str(resp.text)
+					except UnicodeEncodeError:
+						resp = str(resp.text.encode('utf-8'))
+					except:
+						resp = ""
+					if module.check(url, payload, resp, key):
 						break
 	browser.close()
 
@@ -61,7 +67,6 @@ events.sub_info("Found %s URL[s]" %(len(branches)), "Spider")
 modules = load_modules()
 print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
-
 for module in modules:
 	scan_get(branches, module)
 runtime = time.time() - runtime

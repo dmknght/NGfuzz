@@ -18,7 +18,8 @@ def start(url):
 		title = str(browser.get_current_page().title.text.replace("\n", ""))
 	except UnicodeEncodeError:
 		title = str(browser.get_current_page().title.text.encode('utf-8')).replace("\n", "")
-	except:
+	except Exception as error:
+		events.error(error, "Page title")
 		title = "No Title"
 	events.info(title, info = "Title")
 	
