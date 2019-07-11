@@ -30,7 +30,7 @@ def spider(url, branch = True):
 		for link in browser.links():
 			link = cores.get_params(link.attrs['href'])
 			link, params = link.keys()[0], link.values()[0]
-			if "://" not in link:
+			if link and "://" not in link:
 				if link[:2] == "./":
 					link = check_url(scope) + link[2:]
 				elif link[0] == "/": # /index.php for example, remove / and combine with urls
