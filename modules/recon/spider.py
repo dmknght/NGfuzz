@@ -16,7 +16,6 @@ def spider(url):
 
 	import mechanicalsoup
 	try:
-		import traceback
 		browser = mechanicalsoup.StatefulBrowser()
 		browser.open(url)
 
@@ -40,7 +39,6 @@ def spider(url):
 						all_urls[link].update(params)
 
 	except Exception as error:
-		traceback.print_exc()
 		from cores import events
 		events.error(error)
 	finally:
