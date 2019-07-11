@@ -3,7 +3,7 @@ from cores import events
 import time
 
 runtime = time.time()
-url = cores.check_url("http://quangphu.com.vn/?php=product_detail&id=208")
+url = cores.check_url("http://testphp.vulnweb.com/")
 from modules import footprinting
 footprinting.start(url)
 from modules import spider
