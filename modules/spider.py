@@ -1,18 +1,5 @@
 from cores.actions import check_url, get_domain
-
-def get_params(url):
-	# TODO test with multiple arguments
-	param, value = "", ""
-	try:
-		url, payloads = url.split("?")
-		params = {param: value for param, value in [_.split("=") for _ in payloads.split("&")]}
-	except ValueError:
-		pass
-	except Exception as error:
-		from cores import events
-		events.error(error)
-	finally:
-		return {url: params}
+import cores
 
 all_urls = {}
 
@@ -21,7 +8,7 @@ def spider(url):
 	global all_urls
 
 	# all_urls = check_robots.check(url) # TODO edit here
-	link = get_params(url)
+	link = cores.get_params(url)
 	link, params = link.keys()[0], link.values()[0]
 	all_urls.update({link: params})
 
@@ -35,7 +22,7 @@ def spider(url):
 
 
 		for link in browser.links():
-			link = get_params(link.attrs['href'])
+			link = cores.get_params(link.attrs['href'])
 			link, params = link.keys()[0], link.values()[0]
 			if "://" not in link:
 				if link[0] == "/": # /index.php for example, remove / and combine with urls
