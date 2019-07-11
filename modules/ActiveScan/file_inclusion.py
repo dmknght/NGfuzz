@@ -14,16 +14,17 @@ class Check(Scanner):
 			"../../../../../../../../../../boot.ini",
 			"../../../../../../../../../../../../../../../../../../../../boot.ini",
 			"../../../../../../../../../../boot.ini\0",
-			"indexXX",
+			# "indexXX",
 		]
 
 	def signature(self):
 		return {
-			"*nix System": [
+			"Nix LFI": [
 				"root:x:0:0",
 				"root:*:0:0",
+				"www-data:x:",
 			],
-			"Windows System": [
+			"Windows LFI": [
 				"[boot loader]",
 			],
 			"File Includsion": [
