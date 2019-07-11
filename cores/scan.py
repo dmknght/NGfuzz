@@ -16,8 +16,8 @@ def get_method(path, module_name):
 						# TODO no values, payload only
 						# send_payload = {k: "%s%s" %(params[k], payload) if k == key else params[k] for k in params.keys()}
 						send_payload = {k: "%s" %(payload) if k == key else params[k] for k in params.keys()}
-						# print(send_payload)
 						resp = browser.open(url, params = send_payload)
+						# print(send_payload)
 						try:
 							resp = str(resp.text)
 						except UnicodeEncodeError:
