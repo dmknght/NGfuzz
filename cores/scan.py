@@ -14,7 +14,8 @@ def get_method(path, module_name):
 				for key in params.keys():
 					for payload in module.payload:
 						# TODO no values, payload only
-						send_payload = {k: "%s%s" %(params[k], payload) if k == key else params[k] for k in params.keys()}
+						# send_payload = {k: "%s%s" %(params[k], payload) if k == key else params[k] for k in params.keys()}
+						send_payload = {k: "%s" %(payload) if k == key else params[k] for k in params.keys()}
 						# print(send_payload)
 						resp = browser.open(url, params = send_payload)
 						try:
