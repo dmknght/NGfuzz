@@ -5,7 +5,8 @@ class Check(Scanner):
 		return {
 			"MySQL Injection": [
 				"You have an error in your SQL syntax",
-				"supplied argument is not a valid MySQL"
+				"supplied argument is not a valid MySQL",
+				"mysql_fetch_array() expects parameter 1 to be resource, boolean given in"
 			],
 			"Java SQL Injection": [
 				"java.sql.SQLException: Syntax error or access violation",
