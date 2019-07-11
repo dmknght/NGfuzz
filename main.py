@@ -3,7 +3,7 @@ from cores import events
 import time
 
 runtime = time.time()
-url = cores.check_url("http://www.nutrivision.vn/?php=product_detail&id=295")
+url = cores.check_url("http://www.nutrivision.vn/")
 from modules.recon import footprinting
 footprinting.start(url)
 # if option spider
