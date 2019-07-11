@@ -9,7 +9,7 @@ def get_method(path, module_name):
 			try:
 				browser = mechanicalsoup.StatefulBrowser()
 
-				module = importlib.import_module('plugins.%s' %(module_name))
+				module = importlib.import_module('modules.%s' %(module_name))
 				module = module.Check()
 				for key in params.keys():
 					for payload in module.payload:

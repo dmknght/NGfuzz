@@ -4,7 +4,7 @@ import cores
 all_urls = {}
 
 def spider(url):
-	from modules import check_robots
+	# from modules.recon import check_robots
 	global all_urls
 
 	# all_urls = check_robots.check(url) # TODO edit here

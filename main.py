@@ -3,10 +3,11 @@ from cores import events
 import time
 
 runtime = time.time()
-url = cores.check_url("http://testphp.vulnweb.com/")
-from modules import footprinting
+url = cores.check_url("http://www.nutrivision.vn/?php=product_detail&id=295")
+from modules.recon import footprinting
 footprinting.start(url)
-from modules import spider
+# if option spider
+from modules.recon import spider
 print("\n")
 events.success(url, info = "Spider")
 branches = spider.spider(url)
@@ -14,7 +15,8 @@ branches = spider.spider(url)
 # 	branches = [cores.get_params(url)]
 events.sub_info("Found %s URL[s]" %(len(branches)), "Spider")
 
-modules = cores.load_modules()
+from modules import ActiveScan
+modules = cores.load_modules(ActiveScan)
 print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
 from cores import scan

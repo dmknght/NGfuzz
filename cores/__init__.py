@@ -1,13 +1,13 @@
-def load_modules():
+def load_modules(module_path):
 	import os
-	import plugins as module_path
 
 	pwd = module_path.__path__[0]
 
 	for root, dirs, files in os.walk(pwd):
 		files = filter(lambda x: not x.startswith("__") and x.endswith(".py"), files)
 
-	return [x.replace(".py", "") for x in files]
+	root = root.split("modules/")[1]
+	return ["%s.%s" %(root, x.replace(".py", "")) for x in files]
 
 def check_url(url):
 	if "://" in url:
