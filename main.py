@@ -37,7 +37,7 @@ def scan_get(path, module_name):
 						resp = str(resp.text.encode('utf-8'))
 					except:
 						resp = ""
-					if module.check(url, payload, resp, key):
+					if module.check(url, send_payload[key], resp, key):
 						break
 	browser.close()
 
