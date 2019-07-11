@@ -11,33 +11,35 @@ def start(url):
 	events.sub_info(ip_addr, info = "IP Address")
 	# ip_info = GeoIP.GeoIP()
 	# events.sub_info("%s" %(ip_info.country_name_by_name(ip_addr)), info = "Country")
-
-	browser = mechanicalsoup.StatefulBrowser()
-	response = browser.open(url)
 	try:
-		title = str(browser.get_current_page().title.text.replace("\n", ""))
-	except UnicodeEncodeError:
-		title = str(browser.get_current_page().title.text.encode('utf-8')).replace("\n", "")
+		browser = mechanicalsoup.StatefulBrowser()
+		response = browser.open(url)
+		try:
+			title = str(browser.get_current_page().title.text.replace("\n", ""))
+		except UnicodeEncodeError:
+			title = str(browser.get_current_page().title.text.encode('utf-8')).replace("\n", "")
+		except Exception as error:
+			events.error(error, "Page title")
+			title = "No Title"
+		events.info(title, info = "Title")
+		
+		if response.status_code > 500:
+			events.error("Server error: %s" %(response.status_code))
+		elif response.status_code == 404:
+			events.error("Link not found: %s" %(response.status_code))
+			return False
+		elif response.status_code == 403:
+			events.error("Forbidden: %s" %(response.status_code))
+			return False
+
+		if str(browser.get_url()) != url:
+			events.info("%s" %(browser.get_url()), info = "MOVED")
+		header_info(response.headers)
+		header_analysis(response.headers)
 	except Exception as error:
-		events.error(error, "Page title")
-		title = "No Title"
-	events.info(title, info = "Title")
-	
-	if response.status_code > 500:
-		events.error("Server error: %s" %(response.status_code))
-	elif response.status_code == 404:
-		events.error("Link not found: %s" %(response.status_code))
-		return False
-	elif response.status_code == 403:
-		events.error("Forbidden: %s" %(response.status_code))
-		return False
-
-	if str(browser.get_url()) != url:
-		events.info("%s" %(browser.get_url()), info = "MOVED")
-	header_info(response.headers)
-	header_analysis(response.headers)
-
-	browser.close()
+		events.error(error, "Footprinting")
+	finally:
+		browser.close()
 
 def header_info(header):
 	# print(header)
