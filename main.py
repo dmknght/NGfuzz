@@ -29,7 +29,7 @@ def scan_get(path, module_name):
 		if params:
 			for payload in module.payload:
 				params = {k: payload for k in params.keys()}
-				print(params)
+				# print(params)
 				# module.payload = payload
 				# payloads = {param: payload}
 				# browser.open(url, params = payloads)# + payload)
