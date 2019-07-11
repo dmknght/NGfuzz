@@ -26,7 +26,6 @@ def spider(url, branch = True):
 		browser = mechanicalsoup.StatefulBrowser()
 		browser.open(scope)
 
-
 		for link in browser.links():
 			link = cores.get_params(link.attrs['href'])
 			link, params = link.keys()[0], link.values()[0]
