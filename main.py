@@ -14,28 +14,25 @@ def load_modules():
 	return [x.replace(".py", "") for x in files]
 
 def scan_get(path, module_name):
-	import importlib
-	module = importlib.import_module('plugins.%s' %(module_name))
-	module = module.Check()
-
-	browser = mechanicalsoup.StatefulBrowser()
-
 	for url in path.keys():
 		params = path[url]
 		# Remove empty keys and values
 		# https://stackoverflow.com/a/21482035
 		params = {k: v for k, v in params.items() if v}
-		# print params
 		if params:
-			for payload in module.payload:
-				params = {k: payload for k in params.keys()}
-				# print(params)
-				# module.payload = payload
-				# payloads = {param: payload}
-				# browser.open(url, params = payloads)# + payload)
-				browser.open(url, params = params)
-				if module.check(browser, payload):
-					break
+			import importlib
+			browser = mechanicalsoup.StatefulBrowser()
+
+			module = importlib.import_module('plugins.%s' %(module_name))
+			module = module.Check()
+			for key in params.keys():
+				for payload in module.payload:
+					# TODO no values, payload only
+					send_payload = {k: "%s%s" %(params[k], payload) if k == key else params[k] for k in params.keys()}
+					# print(send_payload)
+					browser.open(url, params = send_payload)
+					if module.check(browser, payload):
+						break
 	browser.close()
 
 def check_url(url):
@@ -50,7 +47,7 @@ def check_url(url):
 	return url
 
 runtime = time.time()
-url = check_url("http://aseafood.vn/")
+url = check_url("http://quangphu.com.vn/?php=product_detail&id=208")
 from modules import footprinting
 footprinting.start(url)
 from cores import spider
