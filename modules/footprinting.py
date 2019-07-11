@@ -25,6 +25,7 @@ def start(url):
 		
 		if response.status_code > 500:
 			events.error("Server error: %s" %(response.status_code))
+			return False
 		elif response.status_code == 404:
 			events.error("Link not found: %s" %(response.status_code))
 			return False
@@ -34,9 +35,11 @@ def start(url):
 
 		if str(browser.get_url()) != url:
 			events.info("%s" %(browser.get_url()), info = "MOVED")
-		header_info(response.headers)
-		header_analysis(response.headers)
-		http_method(response.headers)
+
+		analysis_functions = [header_info, header_analysis, http_method, cross_origin]
+		for func in analysis_functions:
+			func(response.headers)
+
 	except Exception as error:
 		events.error(error, "Footprinting")
 	finally:
@@ -79,9 +82,18 @@ def http_method(header):
 	# (OTG-CONFIG-006)
 	try:
 		if "PUT" or "DELETE" or "TRACE" or "CONNECT" in (header["Access-Control-Allow-Methods"] or header["Allow"]):
-			events.sub_vuln_low("HTTP Methods", header["Access-Control-Allow-Methods"])
+			events.sub_vuln_med("HTTP Methods", header["Access-Control-Allow-Methods"])
 		else:
 			events.sub_info("HTTP Methods", header["Access-Control-Allow-Methods"])
+	except:
+		pass
+
+def cross_origin(header):
+	try:
+		if header["Access-Control-Allow-Origin"] == "*":
+			events.sub_vuln_med("Cross Origin", "Access-Control-Allow-Origin: %s" %(header["Access-Control-Allow-Origin"]))
+		else:
+			events.sub_info("Cross Origin", header["Access-Control-Allow-Origin"])
 	except:
 		pass
 
