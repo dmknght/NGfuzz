@@ -3,19 +3,21 @@ from cores import events
 import time
 
 runtime = time.time()
-url = cores.check_url("http://www.nutrivision.vn/")
+url = cores.check_url("http://192.168.56.103/ghost/")
 from modules.recon import footprinting
 footprinting.start(url)
 # if option spider
 from modules.recon import spider
 print("\n")
-events.success(url, info = "Spider")
-branches = spider.spider(url)
+branch = False
+events.success(url, "Spider")
+branches = spider.spider(url, branch = branch)
 # if "no--crawl":
 # 	branches = [cores.get_params(url)]
-events.sub_info("Found %s URL[s]" %(len(branches)), "Spider")
+events.sub_info("Found %s URL[s]" %(len(branches)), info = "Root" if not branch else "Branch")
 
 from modules import ActiveScan
+
 modules = cores.load_modules(ActiveScan)
 print("\n")
 events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Scanner")

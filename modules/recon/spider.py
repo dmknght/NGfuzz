@@ -13,19 +13,19 @@ def spider(url, branch = True):
 	all_urls.update({link: params})
 
 	if branch == False:
-		scope = get_domain(url)
+		scope = check_url(get_domain(url))
 	else:
 		if url[-1] == "/":
 			scope = url
 		else:
 			# scope = check_url("/".join(url.split("/")[2:-1]))
 			# scope = scope + "/" if scope[-1] != "/" else scope
-			scope = "/".join(url.split("/")[2:-1])
+			scope = check_url("/".join(url.split("/")[2:-1]))
 
 	import mechanicalsoup
 	try:
 		browser = mechanicalsoup.StatefulBrowser()
-		browser.open(url)
+		browser.open(scope)
 
 
 		for link in browser.links():
@@ -33,12 +33,12 @@ def spider(url, branch = True):
 			link, params = link.keys()[0], link.values()[0]
 			if link and "://" not in link:
 				if link[:2] == "./":
-					link = check_url(scope) + link[2:]
+					link = scope + link[2:]
 				elif link[0] == "/": # /index.php for example, remove / and combine with urls
-					link = check_url(scope)[:-1] + link
+					link = scope[:-1] + link
 				else:
-					link = check_url(scope) +link
-			if scope in link and "javascript:__" not in link:
+					link = scope + link
+			if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
 				if link not in all_urls.keys(): # TODO subdomain
 					# all_urls.append({link: params})
 					all_urls.update({link: params})
