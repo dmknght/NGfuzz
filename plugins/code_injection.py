@@ -24,8 +24,8 @@ class Check(Scanner):
 	def signature(self):
 		return {
 			"Unsafe function preg_replace()": [
-				"Fatal error</b>: preg_replace", # TODO check this signature
-				"Warning: preg_replace():" # TODO add more signature
+				"Fatal error</b>: preg_replace",]
+				"Warning: preg_replace():"
 			],
 			"Unsafe function eval()": [
 				"eval()'d code</b> on line <b>",
