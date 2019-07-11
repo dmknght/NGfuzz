@@ -14,8 +14,6 @@ def load_modules():
 	return [x.replace(".py", "") for x in files]
 
 def scan_get(path, module_name):
-	
-	
 	import importlib
 	module = importlib.import_module('plugins.%s' %(module_name))
 	module = module.Check()
@@ -29,8 +27,9 @@ def scan_get(path, module_name):
 		params = {k: v for k, v in params.items() if v}
 		# print params
 		if params:
-			for payload in module.gen_payload():
+			for payload in module.payload:
 				params = {k: payload for k in params.keys()}
+				print(params)
 				# module.payload = payload
 				# payloads = {param: payload}
 				# browser.open(url, params = payloads)# + payload)
@@ -51,7 +50,7 @@ def check_url(url):
 	return url
 
 runtime = time.time()
-url = check_url("http://testphp.vulnweb.com/")
+url = check_url("http://aseafood.vn/")
 from modules import footprinting
 footprinting.start(url)
 from cores import spider
