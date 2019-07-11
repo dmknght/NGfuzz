@@ -18,7 +18,7 @@ events.sub_info("Found %s URL[s]" %(len(branches)), "Spider")
 from modules import ActiveScan
 modules = cores.load_modules(ActiveScan)
 print("\n")
-events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Active scan")
+events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Scanner")
 from cores import scan
 for module in modules:
 	scan.get_method(branches, module)
