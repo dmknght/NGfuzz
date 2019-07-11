@@ -18,8 +18,9 @@ def spider(url, branch = True):
 		if url[-1] == "/":
 			scope = url
 		else:
-			scope = check_url("/".join(url.split("/")[2:-1]))
-			scope = scope + "/" if scope[-1] != "/" else scope
+			# scope = check_url("/".join(url.split("/")[2:-1]))
+			# scope = scope + "/" if scope[-1] != "/" else scope
+			scope = "/".join(url.split("/")[2:-1])
 
 	import mechanicalsoup
 	try:
