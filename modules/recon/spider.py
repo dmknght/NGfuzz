@@ -3,7 +3,7 @@ import cores
 
 all_urls = {}
 
-def spider(url):
+def spider(url, branch = True):
 	# from modules.recon import check_robots
 	global all_urls
 
@@ -12,7 +12,14 @@ def spider(url):
 	link, params = link.keys()[0], link.values()[0]
 	all_urls.update({link: params})
 
-	scope = get_domain(url)
+	if branch == False:
+		scope = get_domain(url)
+	else:
+		if url[-1] == "/":
+			scope = url
+		else:
+			scope = check_url("/".join(url.split("/")[2:-1]))
+			scope = scope + "/" if scope[-1] != "/" else scope
 
 	import mechanicalsoup
 	try:
@@ -40,7 +47,7 @@ def spider(url):
 
 	except Exception as error:
 		from cores import events
-		events.error(error)
+		events.error(error, "Spider")
 	finally:
 		try:
 			browser.close()
