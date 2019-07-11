@@ -25,7 +25,9 @@ def spider(url):
 			link = cores.get_params(link.attrs['href'])
 			link, params = link.keys()[0], link.values()[0]
 			if "://" not in link:
-				if link[0] == "/": # /index.php for example, remove / and combine with urls
+				if link[:2] == "./":
+					link = check_url(scope)[:-2] + link
+				elif link[0] == "/": # /index.php for example, remove / and combine with urls
 					link = check_url(scope)[:-1] + link
 				else:
 					link = check_url(scope) +link
