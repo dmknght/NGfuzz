@@ -9,7 +9,6 @@ def spider(url, branch = True):
 	# all_urls = check_robots.check(url) # TODO edit here
 	# link = cores.get_params(url).keys()[0]
 	# link, params = link.keys()[0], link.values()[0]
-	all_urls.update({cores.get_params(url).keys()[0]: cores.get_params(url).values()[0]})
 
 	if branch == False:
 		scope = cores.check_url(cores.get_domain(url))
@@ -20,6 +19,7 @@ def spider(url, branch = True):
 			# scope = cores.check_url("/".join(url.split("/")[2:-1]))
 			# scope = scope + "/" if scope[-1] != "/" else scope
 			scope = cores.check_url("/".join(url.split("/")[2:-1]))
+	all_urls.update({cores.get_params(scope).keys()[0]: cores.get_params(scope).values()[0]})
 	visited = []
 	import mechanicalsoup
 	try:
