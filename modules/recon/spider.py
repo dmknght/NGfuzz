@@ -7,9 +7,9 @@ def spider(url, branch = True):
 	global all_urls
 
 	# all_urls = check_robots.check(url) # TODO edit here
-	link = cores.get_params(url)
-	link, params = link.keys()[0], link.values()[0]
-	all_urls.update({link: params})
+	# link = cores.get_params(url).keys()[0]
+	# link, params = link.keys()[0], link.values()[0]
+	all_urls.update({cores.get_params(url).keys()[0]: cores.get_params(url).values()[0]})
 
 	if branch == False:
 		scope = cores.check_url(cores.get_domain(url))
@@ -30,9 +30,10 @@ def spider(url, branch = True):
 				visited.append(spider_url)
 				current_url = browser.get_url()
 				if current_url != spider_url:
-					link = cores.get_params(current_url)
-					link, params = link.keys()[0], link.values()[0]
-					all_urls.update({link: params})
+					all_urls.update({cores.get_params(current_url).keys()[0]: cores.get_params(current_url).values()[0]})
+					# link = cores.get_params(current_url)
+					# link, params = link.keys()[0], link.values()[0]
+					# all_urls.update({link: params})
 
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
