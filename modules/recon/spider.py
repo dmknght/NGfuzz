@@ -24,7 +24,10 @@ def spider(url, branch = True):
 	import mechanicalsoup
 	try:
 		browser = mechanicalsoup.StatefulBrowser()
-		for spider_url in all_urls.keys():
+		i = 0
+		while all_urls.keys() != visited:
+			spider_url = all_urls.keys()[i]
+		# for spider_url in all_urls.keys():
 			if spider_url not in visited:
 				browser.open(spider_url)
 				visited.append(spider_url)
@@ -52,6 +55,7 @@ def spider(url, branch = True):
 						else: # Check and add params here
 							if params.keys()[0] not in all_urls[link].keys()[0]:
 								all_urls[link].update(params)
+			i += 1
 
 	except Exception as error:
 		from cores import events
