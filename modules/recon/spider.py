@@ -1,10 +1,10 @@
 import cores
 
-all_urls = {}
 
 def spider(url, branch = True):
 	# from modules.recon import check_robots
-	global all_urls
+	all_urls = {}
+
 
 	# all_urls = check_robots.check(url) # TODO edit here
 	# link = cores.get_params(url).keys()[0]
