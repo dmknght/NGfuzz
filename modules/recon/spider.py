@@ -28,6 +28,11 @@ def spider(url, branch = True):
 			if spider_url not in visited:
 				browser.open(spider_url)
 				visited.append(spider_url)
+				current_url = browser.get_url()
+				if current_url != spider_url:
+					link = cores.get_params(current_url)
+					link, params = link.keys()[0], link.values()[0]
+					all_urls.update({link: params})
 
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
