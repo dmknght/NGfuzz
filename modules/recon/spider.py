@@ -63,7 +63,7 @@ def spider(url, branch = True):
 							# TODO check len of link before add
 							link = spider_url[:-1] + link
 							link = link + "/" if last_slash else link
-							# TODO check `/foo/`, `foo` and `./foo`
+							# TODO check `/foo/`, `foo/` and `./foo/`
 							
 						else:
 							if len(link.split("/")) == 1:
