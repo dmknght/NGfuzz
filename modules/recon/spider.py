@@ -23,11 +23,14 @@ def spider(url, branch = True):
 	visited = []
 	import mechanicalsoup
 	try:
+		import traceback
 		browser = mechanicalsoup.StatefulBrowser()
 		i = 0
 		while all_urls.keys() != visited:
-			spider_url = all_urls.keys()[i]
-		# for spider_url in all_urls.keys():
+			try:
+				spider_url = all_urls.keys()[i]
+			except IndexError:
+				break
 			if spider_url not in visited:
 				browser.open(spider_url)
 				visited.append(spider_url)
@@ -42,12 +45,15 @@ def spider(url, branch = True):
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
 					if link and "://" not in link:
-						if link[:2] == "./":
-							link = scope + link[2:]
+						if link[:3] == "../":
+							# link = "/".join(spider_url.split("/")[:-2]) + "/" + link
+							pass
+						elif link[:2] == "./":
+							link = spider_url + link[2:]
 						elif link[0] == "/": # /index.php for example, remove / and combine with urls
-							link = scope[:-1] + link
+							link = spider_url[:-1] + link
 						else:
-							link = scope + link
+							link = spider_url + link
 					if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
 						if link not in all_urls.keys():
 							link = cores.check_url(link) # TODO bug here
@@ -58,6 +64,7 @@ def spider(url, branch = True):
 			i += 1
 
 	except Exception as error:
+		traceback.print_exc()
 		from cores import events
 		events.error(error, "Spider")
 	finally:
