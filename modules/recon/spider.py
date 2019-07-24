@@ -40,30 +40,21 @@ def spider(url, branch = True):
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
-					
+
 					if link and "://" not in link:
-						"""
-							foo
-							foo/
-							foo/bar/
-							./foo
-							./foo/
-							./foo/bar
-							../foo
-							../foo/
-							../foo/bar
-						"""
 						if link[:3] == "../":
 							# Link with above level
 							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 						elif link[:2] == "./":
+							# Link with current level but use ./
+							link = spider_url + link[2:]
+						elif link[0] == "/":
+							# /index.php for example, remove / and combine with urls
 							# TODO bug here 'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php'
 							# ./webservices/soap/ws-user-account.php
 							# TODO check len of link before add
-							# Link with current level but use ./
-							link = spider_url + link[2:]
-						elif link[0] == "/": # /index.php for example, remove / and combine with urls
 							link = spider_url[:-1] + link
+							
 						else:
 							# Remove "/" in last character
 							link = link[:-1] if link[-1] == "/" else link
