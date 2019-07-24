@@ -1,6 +1,6 @@
 import cores
 
-
+# TODO can't crawl all urls from root level
 def spider(url, branch = True):
 	# from modules.recon import check_robots
 	all_urls = {}
@@ -65,18 +65,18 @@ def spider(url, branch = True):
 					if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
 						# If url is not visited
 						if link not in all_urls.keys():
+							# TODO bug  'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php':
 							link = cores.check_url(link)
-							all_urls.update({link: params})
+							resp = browser.open(link)
+							if resp.status_code < 400:
+								all_urls.update({link: params})
 							
-							# Check if current url redirect us to other url with parameter
-							try:
-								browser.open(link)
+								# Check if current url redirect us to other url with parameter
 								current_url = browser.get_url()
 								# If link is redirected
 								if current_url != link:
 									all_urls.update(cores.get_params(current_url))
-							except:
-								pass
+
 						# Else, update new parameters only
 						else: # Check and add params here
 							if params.keys()[0] not in all_urls[link].keys()[0]:
