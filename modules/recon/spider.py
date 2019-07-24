@@ -16,14 +16,13 @@ def spider(url, branch = True):
 		if url[-1] == "/":
 			scope = url
 		else:
-			# scope = cores.check_url("/".join(url.split("/")[2:-1]))
-			# scope = scope + "/" if scope[-1] != "/" else scope
 			scope = cores.check_url("/".join(url.split("/")[2:-1]))
 	all_urls.update({cores.get_params(scope).keys()[0]: cores.get_params(scope).values()[0]})
 	visited = []
 	import mechanicalsoup
 	try:
-		import traceback
+		# TODO Invalid url protocol
+		# TODO DOM URLs
 		browser = mechanicalsoup.StatefulBrowser()
 		i = 0
 		while all_urls.keys() != visited:
@@ -37,23 +36,29 @@ def spider(url, branch = True):
 				current_url = browser.get_url()
 				if current_url != spider_url:
 					all_urls.update({cores.get_params(current_url).keys()[0]: cores.get_params(current_url).values()[0]})
-					# link = cores.get_params(current_url)
-					# link, params = link.keys()[0], link.values()[0]
-					# all_urls.update({link: params})
 
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
 					if link and "://" not in link:
 						if link[:3] == "../":
-							# link = "/".join(spider_url.split("/")[:-2]) + "/" + link
-							pass
+							# Link with above level
+							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 						elif link[:2] == "./":
+							# Link with current level but use ./
 							link = spider_url + link[2:]
 						elif link[0] == "/": # /index.php for example, remove / and combine with urls
 							link = spider_url[:-1] + link
 						else:
-							link = spider_url + link
+							# Remove "/" in last character
+							link = link[:-1] if link[-1] == "/" else link
+							if len(link.split("/")) == 1:
+								# href contains url in same level
+								link = "/".join(spider_url.split("/")[:-1]) + "/" + link
+							else:
+								# different level
+								link = spider_url + link
+
 					if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
 						if link not in all_urls.keys():
 							link = cores.check_url(link) # TODO bug here
@@ -64,7 +69,6 @@ def spider(url, branch = True):
 			i += 1
 
 	except Exception as error:
-		traceback.print_exc()
 		from cores import events
 		events.error(error, "Spider")
 	finally:
