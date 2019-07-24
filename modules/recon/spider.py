@@ -21,8 +21,7 @@ def spider(url, branch = True):
 	visited = []
 	import mechanicalsoup
 	try:
-		# TODO Invalid url protocol
-		# TODO DOM URLs
+		# TODO Invalid url protocol or DOM url
 		browser = mechanicalsoup.StatefulBrowser()
 		i = 0
 		while all_urls.keys() != visited:
@@ -41,11 +40,26 @@ def spider(url, branch = True):
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
+					
 					if link and "://" not in link:
+						"""
+							foo
+							foo/
+							foo/bar/
+							./foo
+							./foo/
+							./foo/bar
+							../foo
+							../foo/
+							../foo/bar
+						"""
 						if link[:3] == "../":
 							# Link with above level
 							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 						elif link[:2] == "./":
+							# TODO bug here 'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php'
+							# ./webservices/soap/ws-user-account.php
+							# TODO check len of link before add
 							# Link with current level but use ./
 							link = spider_url + link[2:]
 						elif link[0] == "/": # /index.php for example, remove / and combine with urls
@@ -59,34 +73,46 @@ def spider(url, branch = True):
 							else:
 								# different level
 								link = spider_url + link
-								
-					# If URL is good
-
-					if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
-						# If url is not visited
-						if link not in all_urls.keys():
-							# TODO bug  'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php':
-							link = cores.check_url(link)
+						
+						# If URL is good
+						if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
+							# If url is not visited
+							if link not in all_urls.keys():
+								link = cores.check_url(link)
+								resp = browser.open(link)
+								if resp.status_code < 400:
+									all_urls.update({link: params})
+									
+									# Check if current url redirect us to other url with parameter
+									current_url = browser.get_url()
+									# If link is redirected
+									if current_url != link:
+										all_urls.update(cores.get_params(current_url))
+							
+							# Else, update new parameters only
+							else:  # Check and add params here
+								if params.keys()[0] not in all_urls[link].keys()[0]:
+									all_urls[link].update(params)
+					else:
+						if scope in link:
 							resp = browser.open(link)
 							if resp.status_code < 400:
 								all_urls.update({link: params})
-							
 								# Check if current url redirect us to other url with parameter
 								current_url = browser.get_url()
 								# If link is redirected
 								if current_url != link:
 									all_urls.update(cores.get_params(current_url))
-
-						# Else, update new parameters only
-						else: # Check and add params here
-							if params.keys()[0] not in all_urls[link].keys()[0]:
-								all_urls[link].update(params)
+								
 			i += 1
-
+	except AttributeError:
+		pass
 	except Exception as error:
 		from cores import events
 		events.error(error, "Spider")
 	finally:
+		from cores import events
+		events.sub_info("Completed", "Spider")
 		try:
 			browser.close()
 		except:
