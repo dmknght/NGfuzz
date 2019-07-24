@@ -40,30 +40,39 @@ def spider(url, branch = True):
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
-
+					
+					# Remove "/" in last character
+					if link[-1] == "/":
+						last_slash = True
+						link = link[:-1]
+					else:
+						last_slash = False
 					if link and "://" not in link:
 						if link[:3] == "../":
 							# Link with above level
 							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
+							link = link + "/" if last_slash else link
 						elif link[:2] == "./":
 							# Link with current level but use ./
 							link = spider_url + link[2:]
+							link = link + "/" if last_slash else link
 						elif link[0] == "/":
 							# /index.php for example, remove / and combine with urls
 							# TODO bug here 'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php'
 							# ./webservices/soap/ws-user-account.php
 							# TODO check len of link before add
 							link = spider_url[:-1] + link
+							link = link + "/" if last_slash else link
 							
 						else:
-							# Remove "/" in last character
-							link = link[:-1] if link[-1] == "/" else link
 							if len(link.split("/")) == 1:
 								# href contains url in same level
 								link = "/".join(spider_url.split("/")[:-1]) + "/" + link
+								link = link + "/" if last_slash else link
 							else:
 								# different level
 								link = spider_url + link
+								link = link + "/" if last_slash else link
 						
 						# If URL is good
 						if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
