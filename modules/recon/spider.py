@@ -36,7 +36,8 @@ def spider(url, branch = True):
 				current_url = browser.get_url()
 				if current_url != spider_url:
 					all_urls.update({cores.get_params(current_url).keys()[0]: cores.get_params(current_url).values()[0]})
-
+					
+				# Start get all link in current page
 				for link in browser.links():
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
@@ -58,11 +59,25 @@ def spider(url, branch = True):
 							else:
 								# different level
 								link = spider_url + link
+								
+					# If URL is good
 
 					if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
+						# If url is not visited
 						if link not in all_urls.keys():
-							link = cores.check_url(link) # TODO bug here
+							link = cores.check_url(link)
 							all_urls.update({link: params})
+							
+							# Check if current url redirect us to other url with parameter
+							try:
+								browser.open(link)
+								current_url = browser.get_url()
+								# If link is redirected
+								if current_url != link:
+									all_urls.update(cores.get_params(current_url))
+							except:
+								pass
+						# Else, update new parameters only
 						else: # Check and add params here
 							if params.keys()[0] not in all_urls[link].keys()[0]:
 								all_urls[link].update(params)
