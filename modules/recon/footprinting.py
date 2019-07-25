@@ -83,11 +83,14 @@ def http_method(header):
 	# (OTG-CONFIG-006)
 	try:
 		if "PUT" or "DELETE" or "TRACE" or "CONNECT" in (header["Access-Control-Allow-Methods"] or header["Allow"]):
-			events.sub_vuln_med("HTTP Methods", header["Access-Control-Allow-Methods"])
+			events.sub_vuln_med("HTTP Methods", (header["Access-Control-Allow-Methods"] or header["Allow"]))
 		else:
-			events.sub_info("HTTP Methods", header["Access-Control-Allow-Methods"])
+			events.sub_info("HTTP Methods", (header["Access-Control-Allow-Methods"] or header["Allow"]))
 	except:
 		pass
+
+# TODO HTTP Strict method
+# TODO rework Content-Type header
 
 def cross_origin(header):
 	try:
