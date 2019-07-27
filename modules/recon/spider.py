@@ -27,84 +27,40 @@ def spider(url, branch = True):
 		while all_urls.keys() != visited:
 			try:
 				spider_url = all_urls.keys()[i]
-			except IndexError:
+			except IndexError as error:
 				break
-			if spider_url not in visited:
-				browser.open(spider_url)
-				visited.append(spider_url)
-				current_url = browser.get_url()
-				if current_url != spider_url:
-					all_urls.update({cores.get_params(current_url).keys()[0]: cores.get_params(current_url).values()[0]})
-					
-				# Start get all link in current page
-				for link in browser.links():
-					link = cores.get_params(link.attrs['href'])
-					link, params = link.keys()[0], link.values()[0]
-					
-					# Remove "/" in last character
-					if link[-1] == "/":
-						last_slash = True
-						link = link[:-1]
-					else:
-						last_slash = False
-					if link and "://" not in link:
-						if link[:3] == "../":
-							# Link with above level
-							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
-							link = link + "/" if last_slash else link
-						elif link[:2] == "./":
-							# Link with current level but use ./
-							link = spider_url + link[2:]
-							link = link + "/" if last_slash else link
-						elif link[0] == "/":
-							# /index.php for example, remove / and combine with urls
-							# TODO bug here 'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php'
-							# ./webservices/soap/ws-user-account.php
-							# TODO check len of link before add
-							link = spider_url[:-1] + link
-							link = link + "/" if last_slash else link
-							# TODO check `/foo/`, `foo/` and `./foo/`
-							
+			browser.open(spider_url)
+			visited.append(spider_url)
+			current_url = browser.get_url()
+			if current_url != spider_url:
+				all_urls.update({cores.get_params(current_url).keys()[0]: cores.get_params(current_url).values()[0]})
+				
+			# Start get all link in current page
+			for _url in list(browser.links()):
+				if "://" in _url.attrs['href'] and scope not in _url.attrs['href']:
+					# If url is an other website, skip it
+					pass
+				else:
+					# TODO BUG can't get url in branches
+					# TODO work with scope range (branch and root)
+					if "javascript:__" not in _url.attrs['href'] and "javascript:" not in _url.attrs['href'] and "mailto:" not in _url.attrs['href']:
+						# DON'T WORK WITH JAVASCRIPT URL or mail url
+						browser.follow_link(_url)
+						current_url = browser.get_url()
+						# If url is new -> add to url
+						link = cores.get_params(current_url)
+						if link.keys()[0] not in visited:
+							# TODO GET all link in not visited
+							# Open url and do stuff
+							all_urls.update(link)
+							visited.append(link.keys()[0])
+	
+						# If url is the same, check if it has different parameters
 						else:
-							if len(link.split("/")) == 1:
-								# href contains url in same level
-								link = "/".join(spider_url.split("/")[:-1]) + "/" + link
-								link = link + "/" if last_slash else link
-							else:
-								# different level
-								link = spider_url + link
-								link = link + "/" if last_slash else link
-						
-						# If URL is good
-						if link and scope in link and "javascript:__" not in link and "javascript:" not in link:
-							# If url is not visited
-							if link not in all_urls.keys():
-								link = cores.check_url(link)
-								resp = browser.open(link)
-								if resp.status_code < 400:
-									all_urls.update({link: params})
-									
-									# Check if current url redirect us to other url with parameter
-									current_url = browser.get_url()
-									# If link is redirected
-									if current_url != link:
-										all_urls.update(cores.get_params(current_url))
-							
-							# Else, update new parameters only
-							else:  # Check and add params here
-								if params.keys()[0] not in all_urls[link].keys()[0]:
-									all_urls[link].update(params)
-					else:
-						if scope in link:
-							resp = browser.open(link)
-							if resp.status_code < 400:
-								all_urls.update({link: params})
-								# Check if current url redirect us to other url with parameter
-								current_url = browser.get_url()
-								# If link is redirected
-								if current_url != link:
-									all_urls.update(cores.get_params(current_url))
-								
+							# TODO check if parameter is different
+							# Update parameters
+							all_urls[link.keys()[0]].update(link.values()[0])
+							visited.append(link.keys()[0])
 			i += 1
 	except AttributeError:
 		pass
