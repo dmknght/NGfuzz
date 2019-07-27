@@ -52,28 +52,17 @@ def spider(url, branch = True):
 							# Link with above level
 							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 							link = link + "/" if last_slash else link
-						elif link[:2] == "./":
-							# Link with current level but use ./
-							link = spider_url + link[2:]
-							link = link + "/" if last_slash else link
-						elif link[0] == "/":
-							# /index.php for example, remove / and combine with urls
-							# TODO bug here 'http://192.168.56.103/mutillidae/webservices/soap/ws-hello-world.ph/mutillidae/webservices/soap/ws-hello-world.php'
-							# ./webservices/soap/ws-user-account.php
-							# TODO check len of link before add
-							link = spider_url[:-1] + link
-							link = link + "/" if last_slash else link
-						# TODO check `/foo/`, `foo/` and `./foo/`
-						
 						else:
+							# Move `/foo/`, `foo/` and `./foo/` to 1 format
+							if link[:2] == "./":
+								link = link[2:]
+							elif link[:1] == "/":
+								link = link[1:]
 							if len(link.split("/")) == 1:
-								# href contains url in same level
 								link = "/".join(spider_url.split("/")[:-1]) + "/" + link
 								link = link + "/" if last_slash else link
 							else:
-								# different level
-								link = spider_url + link
-								link = link + "/" if last_slash else link
+								link = spider_url + link + "/" if last_slash else spider_url + link
 						
 						# If URL is good
 						if link and scope in link and "javascript:__" not in link and "javascript:" not in link and "mailto:" not in link:
