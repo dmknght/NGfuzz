@@ -41,58 +41,59 @@ def spider(url, branch = True):
 					link = cores.get_params(link.attrs['href'])
 					link, params = link.keys()[0], link.values()[0]
 					
-					# Remove "/" in last character
-					if link[-1] == "/":
-						last_slash = True
-						link = link[:-1]
-					else:
-						last_slash = False
-					if link and "://" not in link:
-						if link[:3] == "../":
-							# Link with above level
-							link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
-							link = link + "/" if last_slash else link
+					if link:
+						# Remove "/" in last character
+						if link[-1] == "/":
+							last_slash = True
+							link = link[:-1]
 						else:
-							# Move `/foo/`, `foo/` and `./foo/` to 1 format
-							if link[:2] == "./":
-								link = link[2:]
-							elif link[:1] == "/":
-								link = link[1:]
-							if len(link.split("/")) == 1:
-								link = "/".join(spider_url.split("/")[:-1]) + "/" + link
+							last_slash = False
+						if link and "://" not in link:
+							if link[:3] == "../":
+								# Link with above level
+								link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 								link = link + "/" if last_slash else link
 							else:
-								link = spider_url + link + "/" if last_slash else spider_url + link
-						
-						# If URL is good
-						if link and scope in link and "javascript:__" not in link and "javascript:" not in link and "mailto:" not in link:
-							# If url is not visited
-							if link not in all_urls.keys():
-								link = cores.check_url(link)
+								# Move `/foo/`, `foo/` and `./foo/` to 1 format
+								if link[:2] == "./":
+									link = link[2:]
+								elif link[:1] == "/":
+									link = link[1:]
+								if len(link.split("/")) == 1:
+									link = "/".join(spider_url.split("/")[:-1]) + "/" + link
+									link = link + "/" if last_slash else link
+								else:
+									link = spider_url + link + "/" if last_slash else spider_url + link
+							
+							# If URL is good
+							if link and scope in link and "javascript:__" not in link and "javascript:" not in link and "mailto:" not in link:
+								# If url is not visited
+								if link not in all_urls.keys():
+									link = cores.check_url(link)
+									resp = browser.open(link)
+									if resp.status_code < 400:
+										all_urls.update({link: params})
+										
+										# Check if current url redirect us to other url with parameter
+										current_url = browser.get_url()
+										# If link is redirected
+										if current_url != link:
+											all_urls.update(cores.get_params(current_url))
+								
+								# Else, update new parameters only
+								else:  # Check and add params here
+									if params.keys()[0] not in all_urls[link].keys()[0]:
+										all_urls[link].update(params)
+						else:
+							if scope in link:
 								resp = browser.open(link)
 								if resp.status_code < 400:
 									all_urls.update({link: params})
-									
 									# Check if current url redirect us to other url with parameter
 									current_url = browser.get_url()
 									# If link is redirected
 									if current_url != link:
 										all_urls.update(cores.get_params(current_url))
-							
-							# Else, update new parameters only
-							else:  # Check and add params here
-								if params.keys()[0] not in all_urls[link].keys()[0]:
-									all_urls[link].update(params)
-					else:
-						if scope in link:
-							resp = browser.open(link)
-							if resp.status_code < 400:
-								all_urls.update({link: params})
-								# Check if current url redirect us to other url with parameter
-								current_url = browser.get_url()
-								# If link is redirected
-								if current_url != link:
-									all_urls.update(cores.get_params(current_url))
 			
 			i += 1
 	except AttributeError:
