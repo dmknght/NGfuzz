@@ -45,7 +45,7 @@ def spider(url, branch = True):
 					
 					if link:
 						# DONT OPEN DOC FILES
-						if link.split(".")[-1] not in doc_ext:
+						if link.split(".")[-1] not in doc_ext and "?" not in link:
 							# Remove "/" in last character
 							if link[-1] == "/":
 								last_slash = True
@@ -54,6 +54,7 @@ def spider(url, branch = True):
 								last_slash = False
 							if link and "://" not in link:
 								if link[:3] == "../":
+									# TODO bug in parse url http://192.168.56.103/owaspbricks/config/../login-pages.html,http://192.168.56.103/owaspbricks/config/../config/
 									# Link with above level
 									link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 									link = link + "/" if last_slash else link
