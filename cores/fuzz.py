@@ -21,16 +21,16 @@ def get_method(url, params, fuzz_params, payloads, threads = 16):
 		for thread in threads:
 			thread.join()
 			
-	def send(url, params, fuzz_params, payload):
+	def send(url, params, fuzz_param, payload):
 		try:
 			import mechanicalsoup
 			# TODO add proxy
 			browser = mechanicalsoup.StatefulBrowser()
 			send_payload = {k: "%s" % (payload) if k == fuzz_param else params[k] for k in params.keys()}
-			resp = browser.open(url, params = send_payload)
-			resp = str(resp.text)
+			response = browser.open(url, params = send_payload)
+			resp = str(response.text)
 		except UnicodeEncodeError:
-			resp = str(resp.text.encode('utf-8'))
+			resp = str(response.text.encode('utf-8'))
 		except Exception:
 			resp = ""
 		finally:
@@ -48,7 +48,15 @@ def get_method(url, params, fuzz_params, payloads, threads = 16):
 			module.payload = payload
 			module.signatures = module.signature()
 
-			module.check(url, send_payload[fuzz_params], resp, fuzz_params)
+			result = module.fuzz(url, payload, resp, fuzz_param)
+		# If not found any vuln, print something
+		if not result:
+			if response.status_code != 403:
+				from cores import events
+				events.fuzz_info(response.status_code, "GET", len(resp), fuzz_param, payload)
+		else:
+			from cores import events
+			events.fuzz_vuln(result, "GET", len(resp), fuzz_param, payload)
 		
 		
 	try:
