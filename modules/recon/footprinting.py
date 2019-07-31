@@ -1,17 +1,21 @@
 from cores import events
 import cores
 
+
 def start(url):
 	import mechanicalsoup
-
+	
 	events.info(url, info = "Checking")
 	domain = cores.get_domain(url)
-
-	import socket#, GeoIP
-	ip_addr = socket.gethostbyname(domain)
-	events.sub_info(ip_addr, info = "IP Address")
-	# ip_info = GeoIP.GeoIP()
-	# events.sub_info("%s" %(ip_info.country_name_by_name(ip_addr)), info = "Country")
+	
+	try:
+		import socket  # , GeoIP
+		ip_addr = socket.gethostbyname(domain)
+		events.sub_info(ip_addr, info = "IP Address")
+		# ip_info = GeoIP.GeoIP()
+		# events.sub_info("%s" %(ip_info.country_name_by_name(ip_addr)), info =
+	except:
+		pass
 	try:
 		browser = mechanicalsoup.StatefulBrowser()
 		response = browser.open(url)
@@ -25,26 +29,27 @@ def start(url):
 		events.info(title, info = "Title")
 		
 		if response.status_code > 500:
-			events.error("Server error: %s" %(response.status_code))
+			events.error("Server error: %s" % (response.status_code))
 			return False
 		elif response.status_code == 404:
-			events.error("Link not found: %s" %(response.status_code))
+			events.error("Link not found: %s" % (response.status_code))
 			return False
 		elif response.status_code == 403:
-			events.error("Forbidden: %s" %(response.status_code))
+			events.error("Forbidden: %s" % (response.status_code))
 			return False
-
+		
 		if str(browser.get_url()) != url:
-			events.info("%s" %(browser.get_url()), info = "MOVED")
-
+			events.info("%s" % (browser.get_url()), info = "MOVED")
+		
 		analysis_functions = [header_info, header_analysis, http_method, cross_origin]
 		for func in analysis_functions:
 			func(response.headers)
-
+	
 	except Exception as error:
 		events.error(error, "Footprinting")
 	finally:
 		browser.close()
+
 
 def header_info(header):
 	# print(header)
@@ -57,6 +62,7 @@ def header_info(header):
 	except:
 		pass
 
+
 def header_analysis(header):
 	# https://www.owasp.org/index.php/Security_Headers
 	header_standards = (
@@ -65,19 +71,20 @@ def header_analysis(header):
 		("X-Content-Type-Options", "nosniff"),
 		("Content-Type", "text/html; charset=utf-8")
 	)
-
+	
 	def check_section(header, name, value):
 		try:
 			if header[name] == value:
 				events.sub_info(header[name], name)
 			else:
-				events.sub_vuln_low("%s" %(name), "%s" %(header[name]))
+				events.sub_vuln_low("%s" % (name), "%s" % (header[name]))
 		except:
 			events.sub_vuln_low(name, "Missing Header")
-
+	
 	for check_values in header_standards:
 		name, value = check_values
 		check_section(header, name, value)
+
 
 def http_method(header):
 	# (OTG-CONFIG-006)
@@ -89,17 +96,20 @@ def http_method(header):
 	except:
 		pass
 
+
 # TODO HTTP Strict method
 # TODO rework Content-Type header
 
 def cross_origin(header):
 	try:
 		if header["Access-Control-Allow-Origin"] == "*":
-			events.sub_vuln_med("Cross Origin", "Access-Control-Allow-Origin: %s" %(header["Access-Control-Allow-Origin"]))
+			events.sub_vuln_med("Cross Origin",
+			                    "Access-Control-Allow-Origin: %s" % (header["Access-Control-Allow-Origin"]))
 		else:
 			events.sub_info("Cross Origin", header["Access-Control-Allow-Origin"])
 	except:
 		pass
+
 
 def banner_grab():
 	pass
