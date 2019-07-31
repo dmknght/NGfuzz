@@ -28,13 +28,18 @@ def get_method(url, params, fuzz_params, payloads, threads = 16):
 			browser = mechanicalsoup.StatefulBrowser()
 			send_payload = {k: "%s" % (payload) if k == fuzz_param else params[k] for k in params.keys()}
 			response = browser.open(url, params = send_payload)
+		except Exception as error:
+			from cores import events
+			events.error(error, "FUZZ")
+		finally:
+			browser.close()
+		
+		try:
 			resp = str(response.text)
 		except UnicodeEncodeError:
 			resp = str(response.text.encode('utf-8'))
 		except Exception:
 			resp = ""
-		finally:
-			browser.close()
 		
 		# TODO check HTTP code
 		import importlib, cores
