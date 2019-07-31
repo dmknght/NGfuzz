@@ -46,7 +46,6 @@ class Check(Scanner):
 		}
 
 	def gen_payload(self):
-		def gen_payload(self):
-			from cores.xeger import Xeger
+		from cores.xeger import Xeger
 		generate = Xeger()
 		return [generate.xeger("(\%27)|(\')|(\-\-)|(\%23)|(\#)")]
