@@ -3,7 +3,9 @@ import cores
 
 # TODO can't crawl all urls from root level
 def spider(url, branch = True):
-	doc_ext = ["pdf", "doc", "docx"]
+	media_exts = ('.7z', '.aac', '.aiff', '.au', '.avi', '.bin', '.bmp', '.cab', '.dll', '.dmp', '.ear', '.exe', '.flv', '.gif',
+	           '.gz', '.image', '.iso', '.jar', '.jpeg', '.jpg', '.mkv', '.mov', '.mp3', '.mp4', '.mpeg', '.mpg', '.pdf', '.png',
+	           '.ps', '.rar', '.scm', '.so', '.tar', '.tar.gz', '.tif', '.war', '.wav', '.wmv', '.zip')
 	# TODO Add more extensions to skip
 	# from modules.recon import check_robots
 	all_urls = {}
@@ -45,24 +47,32 @@ def spider(url, branch = True):
 					
 					if link:
 						# DONT OPEN DOC FILES
-						if link.split(".")[-1] not in doc_ext and "?" not in link:
+						# if link.split(".")[-1] not in media_exts and "?" not in link:
+						if link.endswith(media_exts) and "?" not in link:
+							pass
+						elif link:
 							# Remove "/" in last character
-							if link[-1] == "/":
+							# if link[-1] == "/":
+							if link.endswith("/"):
 								last_slash = True
 								link = link[:-1]
 							else:
 								last_slash = False
-							if link and "://" not in link:
-								if link[:3] == "../":
+							# if link and "://" not in link:
+							if not link.startswith("://"):
+								# if link[:3] == "../":
+								if link.startswith("../"):
 									# TODO bug in parse url http://192.168.56.103/owaspbricks/config/../login-pages.html,http://192.168.56.103/owaspbricks/config/../config/
 									# Link with above level
 									link = "/".join(spider_url.split("/")[:-2]) + link.replace("..", "")
 									link = link + "/" if last_slash else link
 								else:
 									# Move `/foo/`, `foo/` and `./foo/` to 1 format
-									if link[:2] == "./":
+									# if link[:2] == "./":
+									if link.startswith("./"):
 										link = link[2:]
-									elif link[:1] == "/":
+									# elif link[:1] == "/":
+									elif link.startswith("/"):
 										link = link[1:]
 									if len(link.split("/")) == 1:
 										link = "/".join(spider_url.split("/")[:-1]) + "/" + link
