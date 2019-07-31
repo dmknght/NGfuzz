@@ -18,3 +18,9 @@ def sub_vuln_low(vuln, info):
 
 def sub_vuln_med(vuln, info):
 	print(" [\033[33m%s\033[00m] [\033[31m%s\033[00m]" %(vuln, info))
+	
+def fuzz_info(http_code, method, size, param, payload):
+	print("[+] [\033[34m%s\033[00m] [%s] [%s] [\033[4m\033[31m%s\033[00m: \033[4m\033[33;1m%s\033[00m]" %(http_code, method, size, param, payload))
+	
+def fuzz_vuln(http_code, method, size, param, payload):
+	print("[+] [\033[31m%s\033[00m] [%s] [%s] [\033[4m\033[31m%s\033[00m: \033[4m\033[33;1m%s\033[00m]" %(http_code, method, size, param, payload))
