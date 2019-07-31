@@ -23,9 +23,17 @@ def check_url(url):
 
 def get_params(url):
 	param, value = "", ""
+	split_char = ""
+	# TODO handle DOM object for DOM XSS
 	try:
-		url, payloads = url.split("?")
-		params = {param: value for param, value in [_.split("=") for _ in payloads.split("&")]}
+		# GET PARAMETERS FROM URL
+		# ? FOR GET PARAMS, # FOR DOM
+		if "?" in url:
+			split_char = "?"
+		elif "#" in url:
+			split_char = "#"
+		url, payloads = url.split(split_char)
+		params = {param: value for param, value in [_.split("=") for _ in payloads.split(split_char)]}
 	except ValueError:
 		params = {'': ''}
 	except Exception as error:
