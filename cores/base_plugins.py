@@ -14,6 +14,14 @@ class Scanner(object):
 					self.found(injection_types, url, parameter, payload)
 					return True
 		return False
+	
+	def fuzz(self, url, payload, response, parameter):
+		for injection_types in self.signatures.keys():
+			for sig in self.signatures[injection_types]:
+				match = re.findall(re.escape(sig), response)
+				if match:
+					return self.signatures.keys()[0]
+		return False
 
 	def gen_payload(self):
 		return []
