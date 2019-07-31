@@ -6,7 +6,5 @@ class Check(Scanner):
 		generate = Xeger()
 		return [generate.xeger("((\%3C)|<)((\%69)|i|(\%49))((\%6D)|m|(\%4D))((\%67)|g|(\%47))[^\n]+((\%3E)|>)")]
 
-		# return ["<script>alert(1);</script>"]
-
 	def signature(self):
 		return {"XSS" : self.payload}
