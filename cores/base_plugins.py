@@ -4,11 +4,11 @@ from cores import events
 class Scanner(object):
 	def __init__(self):
 		self.payload = self.gen_payload()
-		self.signature = self.signature()
+		self.signatures = self.signature()
 
 	def check(self, url, payload, response, parameter):
-		for injection_types in self.signature.keys():
-			for sig in self.signature[injection_types]:
+		for injection_types in self.signatures.keys():
+			for sig in self.signatures[injection_types]:
 				match = re.findall(re.escape(sig), response)
 				if match:
 					self.found(injection_types, url, parameter, payload)
