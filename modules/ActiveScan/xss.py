@@ -4,7 +4,7 @@ class Check(Scanner):
 	def gen_payload(self):
 		from cores.xeger import Xeger
 		generate = Xeger()
-		return [generate.xeger("((\%3C)|<)((\%2F)|\/)*[a-z0-9\%]+((\%3E)|>)")]
+		return [generate.xeger("((\%3C)|<)((\%69)|i|(\%49))((\%6D)|m|(\%4D))((\%67)|g|(\%47))[^\n]+((\%3E)|>)")]
 
 		# return ["<script>alert(1);</script>"]
 
