@@ -13,6 +13,7 @@ class Scanner(object):
 				if match:
 					self.found(injection_types, url, parameter, payload)
 					return True
+		return False
 
 	def gen_payload(self):
 		return []
