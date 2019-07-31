@@ -1,4 +1,5 @@
 from cores.base_plugins import Scanner
+import re
 
 class Check(Scanner):
 	def gen_payload(self):
@@ -9,5 +10,14 @@ class Check(Scanner):
 			if any(x in _payload for x in "\"'><;/"):
 				return _payload
 
+	def check(self, url, payload, response, parameter):
+		for injection_types in self.signatures.keys():
+			for sig in self.signatures[injection_types]:
+				match = re.findall(re.escape(sig), response)
+				if match and any(x in payload for x in "><"):
+					self.found(injection_types, url, parameter, payload)
+					return True
+		return False
+	
 	def signature(self):
 		return {"XSS" : self.payload}
