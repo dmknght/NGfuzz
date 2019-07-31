@@ -71,7 +71,7 @@ def header_analysis(header):
 			if header[name] == value:
 				events.sub_info(header[name], name)
 			else:
-				events.sub_vuln_low("Insecure value", "%s: %s" %(name, header[name]))
+				events.sub_vuln_low("%s" %(name), "%s" %(header[name]))
 		except:
 			events.sub_vuln_low(name, "Missing Header")
 
