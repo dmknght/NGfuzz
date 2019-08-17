@@ -1,8 +1,7 @@
 def load_modules(module_path):
 	import os
-	
 	pwd = module_path.__path__[0]
-	
+
 	for root, dirs, files in os.walk(pwd):
 		files = filter(lambda x: not x.startswith("__") and x.endswith(".py"), files)
 	
