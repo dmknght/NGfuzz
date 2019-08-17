@@ -7,6 +7,7 @@ class Scanner(object):
 		self.signatures = self.signature()
 
 	def check(self, url, payload, response, parameter):
+		# Run this for auto scan
 		for injection_types in self.signatures.keys():
 			for sig in self.signatures[injection_types]:
 				match = re.findall(re.escape(sig), response)
@@ -15,12 +16,14 @@ class Scanner(object):
 					return True
 		return False
 	
-	def fuzz(self, url, payload, response, parameter):
+	def fuzz(self, payload, response, method, size, parameter):
+		# Run this for fuzzer task
 		for injection_types in self.signatures.keys():
 			for sig in self.signatures[injection_types]:
 				match = re.findall(re.escape(sig), response)
 				if match:
-					return self.signatures.keys()[0]
+					return injection_types
+				
 		return False
 
 	def gen_payload(self):
