@@ -8,7 +8,7 @@ def fuzz(url, params, values, payload, headers, point, method):
 	
 	nameMethod = method.__name__.upper()
 	analysis(response, nameMethod, payload, point)
-	if response.status_code < 400:
+	if response.status_code != 404:
 		checkVuln(payload, response.text, nameMethod, len(response.text), point)
 	# TODO fuzz headers
 	return True
