@@ -1,18 +1,16 @@
-import requests
-
 from cores import makePayload
 
-def sendGet(url, params, values, payload, point):
-	# There is no injection point here
-	# Have to think about it
-	# No header fuzz TODO
-	payload = makePayload(params, values, payload, point)
-	response = requests.get(url, params = payload)
-	return response
 
-def sendPost(url, params, values, payload, point):
-	# Still no fuzz point here
-	# No header fuzz
+def fuzz(url, params, values, payload, headers, point, method):
 	payload = makePayload(params, values, payload, point)
-	response = requests.post(url, params = payload)
-	return response
+	response = send(url, method, payload, headers)
+	
+	
+	# TODO analysis response here
+	# TODO fuzz headers
+	return True
+
+
+def send(url, method, payload, headers):
+	resp = method(url, params = payload, headers = headers)
+	return resp
