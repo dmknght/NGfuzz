@@ -10,12 +10,12 @@ class Check(Scanner):
 			if any(x in _payload for x in "\"'><;/"):
 				return _payload
 	
-	def fuzz(self, url, payload, response, parameter):
+	def fuzz(self, payload, response, method, size, parameter):
 		for injection_types in self.signatures.keys():
 			for sig in self.signatures[injection_types]:
 				match = re.findall(re.escape(sig), response)
 				if match and any(x in payload for x in "><"):
-					return self.signatures.keys()[0]
+					return injection_types
 		return False
 	
 	def signature(self):
