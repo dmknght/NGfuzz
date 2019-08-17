@@ -44,3 +44,12 @@ def get_params(url):
 
 def get_domain(url):
 	return url.split("/")[2]
+
+def makePayload(params, values, payload, point):
+	ret = {}
+	for param, value in zip(params, values):
+		if param == point:
+			ret.update({param: payload})
+		else:
+			ret.update({param: value})
+	return ret
