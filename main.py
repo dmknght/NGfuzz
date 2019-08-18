@@ -56,7 +56,7 @@ import time
 runtime = time.time()
 try:
 	result = main()
-except Exception as error:
+except:
 	result = False
 
 if result:
