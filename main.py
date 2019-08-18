@@ -1,33 +1,65 @@
-import cores
 from cores import events
+
+
+def main():
+	from UI import cli
+	
+	url, options = cli.getOptions()
+	import cores
+	url = cores.checkURL(url)
+	
+	try:
+		threads = int(options["-t"])
+		if threads < 1:
+			events.error("Threads must be > 1", "ARGS")
+			return False
+	except ValueError:
+		events.error("Threads must be a number", "ARGS")
+		return False
+	
+	try:
+		if not options["-w"]:
+			events.error("Must give payloads to run", "ARGS")
+			return False
+		payloads = open(options["-w"]).read().split("\n")
+	except IOError:
+		events.error("Error while reading payload path", "ARGS")
+		return False
+	
+	if "*FUZZ" not in url:
+		if not options["-i"]:
+			events.error("Must give parameter to inject", "ARGS")
+			return False
+		else:
+			points = options["-i"].split(",")
+		if "?" in url:
+			params, values = cores.getParams(url.split("?")[1])
+		else:
+			if not options["-p"]:
+				events.error("No parameter", "ARGS")
+				return False
+			params, values = cores.getParams(options["-p"])
+		
+		import requests
+		if options["-m"] == "GET":
+			method = requests.get
+		elif options["-m"] == "POST":
+			method = requests.post
+		
+		from cores import fuzzer
+		fuzzer.createTask(url, params, values, payloads, points, method, "", threads)
+		return True
+	else:
+		pass
 import time
 
 runtime = time.time()
-url = cores.check_url("http://192.168.56.103/owaspbricks/")
-from modules.recon import footprinting
-footprinting.start(url)
-# if option spider
-from modules.recon import spider
-print("\n")
-branch = True
-events.success(url, "Spider")
-branches = spider.spider(url, branch = branch)
-print(branches)
-# if "no--crawl":
-# 	branches = [cores.get_params(url)]
-events.sub_info("Found %s URL[s]" %(len(branches)), info = "Root" if not branch else "Branch")
+try:
+	result = main()
+except Exception as error:
+	result = False
 
-from modules import ActiveScan
-# print(branches)
-modules = cores.load_modules(ActiveScan)
-print("\n")
-events.info("Loaded %s modules: %s" %(len(modules), modules), info = "Scanner")
-from cores import scan
-for module in modules:
-	try:
-		scan.get_method(branches, module)
-	except KeyboardInterrupt:
-		events.error("Interrupted by user", "SCAN")
-		break
-runtime = time.time() - runtime
-events.success(time.strftime("%Y-%m-%d %H:%M"), "Elapsed: %0.2f" %(runtime))
+if result:
+	events.success("Elapsed %0.2f" % (time.time() - runtime), "COMPLETED")
+else:
+	events.error("Elapsed %0.2f" % (time.time() - runtime), "ERROR")
