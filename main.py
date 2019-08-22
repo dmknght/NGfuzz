@@ -40,6 +40,12 @@ def main():
 				return False
 			params, values = cores.getParams(options["-p"])
 		
+		headers = {}
+		if options["-H"]:
+			for pair in options["-H"].split("\n"):
+				key, value = pair.split(":")
+				headers.update({key: value[1:]})
+
 		import requests
 		if options["-m"] == "GET":
 			method = requests.get
@@ -47,7 +53,7 @@ def main():
 			method = requests.post
 		
 		from cores import fuzzer
-		fuzzer.createTask(url, params, values, payloads, points, method, "", threads)
+		fuzzer.createTask(url, params, values, payloads, points, method, headers, threads)
 		return True
 	else:
 		pass

@@ -5,6 +5,7 @@ def defOptions():
 		"-m": "GET",  # Packets method
 		"-w": "",  # wordlist path
 		"-t": 16,  # threads
+		"-H": "", # headers
 	}
 	
 	return options
