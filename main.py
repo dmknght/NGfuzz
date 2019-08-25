@@ -32,6 +32,7 @@ def main():
 			return False
 		else:
 			points = options["-i"].split(",")
+			
 		if "?" in url:
 			params, values = cores.getParams(url.split("?")[1])
 		else:
@@ -45,6 +46,8 @@ def main():
 			for pair in options["-H"].split("\n"):
 				key, value = pair.split(":")
 				headers.update({key: value[1:]})
+
+		# TODO if point in points not in headers or params, return False
 
 		import requests
 		if options["-m"] == "GET":
