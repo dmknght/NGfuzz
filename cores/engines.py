@@ -1,25 +1,22 @@
-import cores
+import cores, requests
 from cores import events
 
 
 def fuzz(url, params, headers, payload, point, method):
-	name = method.__name__.upper()
-	
 	params, headers = cores.addPayload(params, headers, payload, point)
-	response = send(url, method, params, headers,  name)
+	response = send(url, method, params, headers)
 	
-	
-	analysis(response, name, payload, point)
+	analysis(response, method, payload, point)
 	if response.status_code != 404:
-		checkVuln(payload, response.text, name, len(response.text), point)
+		checkVuln(payload, response.text, method, len(response.text), point)
 	return True
 
 
-def send(url, method, payload, headers, name):
-	if name == "POST":
-		resp = method(url, data = payload, headers = headers)
+def send(url, method, payload, headers):
+	if method == "POST":
+		resp = requests.post(url, data = payload, headers = headers)
 	else:
-		resp = method(url, params = payload, headers = headers)
+		resp = requests.get(url, params = payload, headers = headers)
 	return resp
 
 

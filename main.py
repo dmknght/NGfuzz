@@ -56,14 +56,12 @@ def main():
 		
 		# TODO check if users don't give enough params
 
-
-		import requests
 		if options["-m"] == "GET":
-			method = requests.get
+			method = "GET"
 		elif options["-m"] == "POST":
-			method = requests.post
+			method = "POST"
 		elif options["-m"] == "POST-FORM":
-			method = requests.post
+			method = "POST"
 			headers.update({"Content-Type": "application/x-www-form-urlencoded"})
 			# TODO add submit value automatically?
 		else:
