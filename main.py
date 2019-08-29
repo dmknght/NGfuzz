@@ -62,7 +62,7 @@ def main():
 			method = "POST"
 		elif options["-m"] == "POST-FORM":
 			method = "POST"
-			headers.update({"Content-Type": "application/x-www-form-urlencoded"})
+			headers.update({"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"})
 			# TODO add submit value automatically?
 		else:
 			events.error("Method is not supported", "ARGS")
