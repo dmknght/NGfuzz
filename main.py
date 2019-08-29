@@ -38,8 +38,14 @@ def main():
 		headers = cores.makeHeader(options["-H"])
 		
 		# Get parameters
-		if "?" in url:
-			params, values = cores.getParams(url.split("?")[1])
+		if options["-m"] == "GET":
+			if "?" in url:
+				params, values = cores.getParams(url.split("?")[1])
+			else:
+				if options["-p"]:
+					params, values = cores.getParams(options["-p"])
+				else:
+					params, values = "", ""
 		else:
 			if options["-p"]:
 				params, values = cores.getParams(options["-p"])
