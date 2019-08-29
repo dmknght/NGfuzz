@@ -38,7 +38,7 @@ def main():
 		headers = cores.makeHeader(options["-H"])
 		
 		# Get parameters
-		if options["-m"] == "GET":
+		if options["-X"] == "GET":
 			if "?" in url:
 				params, values = cores.getParams(url.split("?")[1])
 			else:
@@ -56,11 +56,11 @@ def main():
 		
 		# TODO check if users don't give enough params
 
-		if options["-m"] == "GET":
+		if options["-X"] == "GET":
 			method = "GET"
-		elif options["-m"] == "POST":
+		elif options["-X"] == "POST":
 			method = "POST"
-		elif options["-m"] == "POST-FORM":
+		elif options["-X"] == "POST-FORM":
 			method = "POST"
 			headers.update({"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"})
 			# TODO add submit value automatically?

@@ -2,7 +2,7 @@ def defOptions():
 	options = {
 		"-p": "",  # parameters
 		"-i": "",  # inject parameters
-		"-m": "GET",  # Packets method
+		"-X": "GET",  # Packets method
 		"-w": "",  # wordlist path
 		"-t": 16,  # threads
 		"-H": "", # headers
