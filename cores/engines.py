@@ -3,19 +3,23 @@ from cores import events
 
 
 def fuzz(url, params, headers, payload, point, method):
-	# payload = cores.makePayload(params, values, payload, headers, point)
-	params, headers = cores.addPayload(params, headers, payload, point)
-	response = send(url, method, params, headers)
+	name = method.__name__.upper()
 	
-	nameMethod = method.__name__.upper()
-	analysis(response, nameMethod, payload, point)
+	params, headers = cores.addPayload(params, headers, payload, point)
+	response = send(url, method, params, headers,  name)
+	
+	
+	analysis(response, name, payload, point)
 	if response.status_code != 404:
-		checkVuln(payload, response.text, nameMethod, len(response.text), point)
+		checkVuln(payload, response.text, name, len(response.text), point)
 	return True
 
 
-def send(url, method, payload, headers):
-	resp = method(url, params = payload, headers = headers)
+def send(url, method, payload, headers, name):
+	if name == "POST":
+		resp = method(url, data = payload, headers = headers)
+	else:
+		resp = method(url, params = payload, headers = headers)
 	return resp
 
 
