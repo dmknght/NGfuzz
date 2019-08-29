@@ -27,22 +27,28 @@ def main():
 		return False
 	
 	if "*FUZZ" not in url:
+		# Check for position
 		if not options["-i"]:
 			events.error("Must give parameter to inject", "ARGS")
 			return False
 		else:
 			points = options["-i"].split(",")
-			
+		
+		# Get headers
+		headers = cores.makeHeader(options["-H"])
+		
+		# Get parameters
 		if "?" in url:
 			params, values = cores.getParams(url.split("?")[1])
 		else:
-			if not options["-p"]:
-				events.error("No parameter", "ARGS")
-				return False
-			params, values = cores.getParams(options["-p"])
+			if options["-p"]:
+				params, values = cores.getParams(options["-p"])
+			else:
+				params, values = "", ""
 		
-		headers = cores.makeHeader(options["-H"])
 		params = cores.makeParams(params, values)
+		
+		# TODO check if users don't give enough params
 
 
 		import requests
@@ -61,7 +67,7 @@ import time
 runtime = time.time()
 try:
 	result = main()
-except:
+except Exception as error:
 	result = False
 
 if result:
