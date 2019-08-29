@@ -56,6 +56,13 @@ def main():
 			method = requests.get
 		elif options["-m"] == "POST":
 			method = requests.post
+		elif options["-m"] == "POST-FORM":
+			method = requests.post
+			headers.update({"Content-Type": "application/x-www-form-urlencoded"})
+			# TODO add submit value automatically?
+		else:
+			events.error("Method is not supported", "ARGS")
+			return False
 		
 		from cores import fuzzer
 		fuzzer.createTask(url, params, headers, payloads, points, method, threads)
@@ -67,7 +74,7 @@ import time
 runtime = time.time()
 try:
 	result = main()
-except Exception as error:
+except Exception:
 	result = False
 
 if result:
