@@ -19,4 +19,4 @@ class Check(Scanner):
 		return False
 	
 	def signature(self):
-		return {"XSS" : self.payload}
+		return {"XSS" : [self.payload]}
