@@ -75,8 +75,8 @@ def makeParams(params, values):
 
 def addPayload(params, headers, payload, point):
 	if point in params.keys():
-		params.update({point: payload})
+		params[point] = payload
 	else:
-		headers.update({point: payload})
+		headers[point] = payload
 	
 	return params, headers
