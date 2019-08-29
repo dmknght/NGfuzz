@@ -30,12 +30,15 @@ def checkVuln(payload, response, nameMethod, szResp, point):
 
 	modules = cores.load_modules(ActiveScan)
 
-	for module in modules:
-		module = importlib.import_module('modules.%s' % (module))
-		module = module.Check()
-		module.payload = payload
-		module.signatures = module.signature()
-		result = module.fuzz(payload, response, nameMethod, szResp, point)
-		if result:
-			from cores import events
-			events.fuzz_vuln(result, nameMethod, len(response), point, payload)
+	try:
+		for module in modules:
+			module = importlib.import_module('modules.%s' % (module))
+			module = module.Check()
+			module.payload = payload
+			module.signatures = module.signature()
+			result = module.fuzz(payload, response, nameMethod, szResp, point)
+			if result:
+				from cores import events
+				events.fuzz_vuln(result, nameMethod, len(response), point, payload)
+	except Exception:
+		pass

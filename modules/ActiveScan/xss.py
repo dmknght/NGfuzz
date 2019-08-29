@@ -11,13 +11,12 @@ class Check(Scanner):
 				return _payload
 	
 	def fuzz(self, payload, response, method, size, parameter):
-		vulns = []
 		for injection_types in self.signatures.keys():
 			for sig in self.signatures[injection_types]:
 				match = re.findall(re.escape(sig), response)
 				if match and any(x in payload for x in "><"):
-					vulns.append(injection_types)
-		return vulns
+					return injection_types
+		return False
 	
 	def signature(self):
 		return {"XSS" : [self.payload]}

@@ -17,16 +17,14 @@ class Scanner(object):
 		return False
 	
 	def fuzz(self, payload, response, method, size, parameter):
-		vulns = []
 		# Run this for fuzzer task
 		for injection_types in self.signatures.keys():
 			for sig in self.signatures[injection_types]:
 				match = re.findall(re.escape(sig), response)
 				if match:
-					vulns.append(injection_types)
-				
-		return vulns
-
+					return injection_types
+		return False
+	
 	def gen_payload(self):
 		return []
 
