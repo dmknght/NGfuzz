@@ -41,13 +41,9 @@ def main():
 				return False
 			params, values = cores.getParams(options["-p"])
 		
-		headers = {}
-		if options["-H"]:
-			for pair in options["-H"].split("\n"):
-				key, value = pair.split(":")
-				headers.update({key: value[1:]})
+		headers = cores.makeHeader(options["-H"])
+		params = cores.makeParams(params, values)
 
-		# TODO if point in points not in headers or params, return False
 
 		import requests
 		if options["-m"] == "GET":
@@ -56,7 +52,7 @@ def main():
 			method = requests.post
 		
 		from cores import fuzzer
-		fuzzer.createTask(url, params, values, payloads, points, method, headers, threads)
+		fuzzer.createTask(url, params, headers, payloads, points, method, threads)
 		return True
 	else:
 		pass

@@ -56,11 +56,25 @@ def getDomain(url):
 	return url.split("/")[2]
 
 
-def makePayload(params, values, payload, point):
-	ret = {}
+def makeHeader(header):
+	retHeader = {}
+	if header:
+		for pair in header.split("\n"):
+			key, value = pair.split(":")
+			retHeader.update({key: value[1:]})
+		
+	return retHeader
+	
+def makeParams(params, values):
+	retParam = {}
 	for param, value in zip(params, values):
-		if param == point:
-			ret.update({param: payload})
-		else:
-			ret.update({param: value})
-	return ret
+		retParam.update({param: value})
+	return retParam
+
+def addPayload(params, headers, payload, point):
+	if point in headers.keys():
+		headers[point] = payload
+	else:
+		params[point] = payload
+		
+	return params, headers

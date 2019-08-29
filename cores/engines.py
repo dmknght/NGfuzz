@@ -2,15 +2,15 @@ import cores
 from cores import events
 
 
-def fuzz(url, params, values, payload, headers, point, method):
-	payload = cores.makePayload(params, values, payload, point)
-	response = send(url, method, payload, headers)
+def fuzz(url, params, headers, payload, point, method):
+	# payload = cores.makePayload(params, values, payload, headers, point)
+	params, headers = cores.addPayload(params, headers, payload, point)
+	response = send(url, method, params, headers)
 	
 	nameMethod = method.__name__.upper()
 	analysis(response, nameMethod, payload, point)
 	if response.status_code != 404:
 		checkVuln(payload, response.text, nameMethod, len(response.text), point)
-	# TODO fuzz headers
 	return True
 
 

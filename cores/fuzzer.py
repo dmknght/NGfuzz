@@ -2,7 +2,6 @@ import threading
 
 
 def run_threads(threads):
-	# TODO progress bar
 	# Run threads
 	for thread in threads:
 		thread.start()
@@ -12,7 +11,7 @@ def run_threads(threads):
 		thread.join()
 
 
-def createTask(url, params, values, payloads, points, method, headers, threads):
+def createTask(url, params, headers, payloads, points, method, threads):
 	"""
 		Create threads
 	"""
@@ -30,7 +29,7 @@ def createTask(url, params, values, payloads, points, method, headers, threads):
 			"== Craft threads =="
 			worker = threading.Thread(
 				target = engines.fuzz,
-				args = (url, params, values, payload, headers, point, method)
+				args = (url, params, headers, payload, point, method)
 			)
 			worker.daemon = True
 			workers.append(worker)
