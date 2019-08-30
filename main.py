@@ -28,12 +28,7 @@ def main():
 	
 	if "*FUZZ" not in url:
 		# Check for position
-		if not options["-i"]:
-			events.error("Must give parameter to inject", "ARGS")
-			return False
-		else:
-			points = options["-i"].split(",")
-		
+
 		# Get headers
 		headers = cores.makeHeader(options["-H"])
 		
@@ -53,7 +48,15 @@ def main():
 				params, values = "", ""
 		
 		params = cores.makeParams(params, values)
-		
+
+		if not options["-i"]:
+			points = params.keys()
+		else:
+			points = options["-i"].split(",")
+
+		if not points:
+			events.error("Must give parameter to inject", "ARGS")
+			return False
 		# TODO check if users don't give enough params
 
 		if options["-X"] == "GET":
