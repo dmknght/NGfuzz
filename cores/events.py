@@ -27,8 +27,12 @@ def sub_vuln_med(vuln, info):
 
 	
 def fuzz_info(http_code, method, size, param, payload):
-	print("  -- [\033[34m%s\033[00m] [\033[32m%s\033[00m] [\033[37m%s\033[00m] [\033[4m\033[31m%s\033[00m: \033[4m\033[33;1m%s\033[00m]" %(http_code, method, size, param, payload))
+	print("[\033[34m%s\033[00m] [\033[32m%s\033[00m] [\033[37m%s\033[00m] [\033[4m\033[31m%s\033[00m: \033[4m\033[33;1m%s\033[00m]" %(http_code, method, size, param, payload))
 
 	
 def fuzz_vuln(http_code, method, size, param, payload):
 	print("[*] [\033[31m%s\033[00m] [\033[32m%s\033[00m] [\033[37m%s\033[00m] [\033[4m\033[31m%s\033[00m: \033[4m\033[33;1m%s\033[00m]" %(http_code, method, size, param, payload))
+
+
+def diff_page(data, info = "DIFF"):
+	print(" -- [\033[37m%s\033[00m] [\033[36m%s\033[00m]\n" % (info, data))

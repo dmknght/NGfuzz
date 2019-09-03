@@ -2,11 +2,11 @@ import cores, requests
 from cores import events
 
 
-def fuzz(url, params, headers, payload, point, method):
+def fuzz(url, params, headers, payload, point, method, first_page):
 	params, headers = cores.addPayload(params, headers, payload, point)
 	response = send(url, method, params, headers)
 	
-	analysis(response, method, payload, point)
+	analysis(response, method, payload, point, first_page)
 	if response.status_code != 404:
 		checkVuln(payload, response.text, method, len(response.text), point)
 	return True
@@ -20,11 +20,13 @@ def send(url, method, payload, headers):
 	return resp
 
 
-def analysis(response, name, payload, point):
+def analysis(response, name, payload, point, first_page):
 	if response.status_code < 400:
 		events.fuzz_info(response.status_code, name, len(response.text), point, payload)
 	else:
 		events.fuzz_info(response.status_code, response.title, len(response.text), point, payload)
+	for line in cores.getdiff(first_page, response.text):
+		events.diff_page(line)
 
 
 def checkVuln(payload, response, name, szResp, point):

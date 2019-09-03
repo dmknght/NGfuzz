@@ -80,3 +80,11 @@ def addPayload(params, headers, payload, point):
 		headers[point] = payload
 	
 	return params, headers
+
+
+def getdiff(first, content):
+	source_diff = []
+	for src_line in content.split("\n"):
+		if src_line not in first:
+			source_diff.append(src_line)
+	return source_diff

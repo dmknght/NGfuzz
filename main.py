@@ -71,8 +71,15 @@ def main():
 			events.error("Method is not supported", "ARGS")
 			return False
 		
+		# TODO check url before fuzz
+		from cores.engines import send
+		response = send(url, method, params, headers)
+		if response.status_code == 404:
+			events.error("URL error 404", "CHECK")
+		
+		
 		from cores import fuzzer
-		fuzzer.createTask(url, params, headers, payloads, points, method, threads)
+		fuzzer.createTask(url, params, headers, payloads, points, method, response.text, threads)
 		return True
 	else:
 		pass
