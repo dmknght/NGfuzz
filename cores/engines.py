@@ -20,11 +20,14 @@ def send(url, method, payload, headers):
 	return resp
 
 
-def analysis(response, nameMethod, payload, point):
-	events.fuzz_info(response.status_code, nameMethod, len(response.text), point, payload)
+def analysis(response, name, payload, point):
+	if response.status_code < 400:
+		events.fuzz_info(response.status_code, name, len(response.text), point, payload)
+	else:
+		events.fuzz_info(response.status_code, response.title, len(response.text), point, payload)
 
 
-def checkVuln(payload, response, nameMethod, szResp, point):
+def checkVuln(payload, response, name, szResp, point):
 	import importlib
 	from modules import ActiveScan
 
@@ -36,9 +39,9 @@ def checkVuln(payload, response, nameMethod, szResp, point):
 			module = module.Check()
 			module.payload = payload
 			module.signatures = module.signature()
-			result = module.fuzz(payload, response, nameMethod, szResp, point)
+			result = module.fuzz(payload, response, name, szResp, point)
 			if result:
 				from cores import events
-				events.fuzz_vuln(result, nameMethod, len(response), point, payload)
+				events.fuzz_vuln(result, name, len(response), point, payload)
 	except Exception:
 		pass
